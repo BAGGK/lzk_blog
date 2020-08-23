@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="blog.css">
+  <script src="vue.js"></script>
+
+  <title>lzk's blog</title>
+
+</head>
+
+<body>
+  <div class='sidebar'>
+    <div class="logo-title">
+      <div class="title">
+
+        <img src="./self.jpeg" alt="profile picture">
+
+        <h3 title=""><a href="#">I'M lzk</a></h3>
+
+        <div class="description">
+          <p>love life, love code</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="by_farbox">&copy; Lzk Coder 2020 </div>
+    </div>
+  </div>
+
+
+  <div class="main" id='main'>
+    <div class="page-top">
+      <ul class='nav'>
+        <li><a :class="{current: current_page==0}" @click='current_page=0' href="#">Home</a></li>
+        <li><a :class="{current: current_page==1}" @click='current_page=1' href='#'>Posts</a></li>
+        <li><a :class="{current: current_page==2}" @click='current_page=2' href="#">About</a></li>
+      </ul>
+    </div>
+
+
+    <!-- 文章区域 -->
+    <div class="autopagerize_page_element">
+      <div class="content">
+        <!-- 具体文章 -->
+        <div class="post animated fadeInDown">
+          <div class="post-title">
+            <h3><a href="https://themes.gohugo.io//theme/anatole/post/markdown-syntax/">Markdown Syntax Guide</a>
+            </h3>
+          </div>
+          <div class="post-content"><div class="p_part"><p><p>This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.</p></p></div>
+        
+        <div class="p_part"><p></p></div></div>
+          <div class="post-footer">
+            <div class="meta">
+              <div class="info"><i class="fa fa-sun-o"></i><span class="date">Mon, Mar 11, 2019</span>
+                <a class="tag" href="https://themes.gohugo.io//theme/anatole/tags/markdown/">markdown</a><a class="tag" href="https://themes.gohugo.io//theme/anatole/tags/css/">css</a><a class="tag" href="https://themes.gohugo.io//theme/anatole/tags/html/">html</a><a class="tag" href="https://themes.gohugo.io//theme/anatole/tags/themes/">themes</a>       
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+<!-- vue.js 的脚本 -->
+  <script>
+    const app = new Vue({
+      el: '#main',
+      data: {
+        current_page: 0,
+        posts: []
+      }
+    });
+
+  </script>
+</body>
+
+</html>
