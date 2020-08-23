@@ -58,10 +58,7 @@
             <div class="post-footer">
               <div class="meta">
                 <div class="info"><i class="fa fa-sun-o"></i><span class="date">{{ item.date }}</span>
-                  <a class="tag" href="https://themes.gohugo.io//theme/anatole/tags/markdown/">markdown</a>
-                  <a class="tag" href="https://themes.gohugo.io//theme/anatole/tags/css/">css</a>
-                  <a class="tag" href="https://themes.gohugo.io//theme/anatole/tags/html/">html</a>
-                  <a class="tag" href="https://themes.gohugo.io//theme/anatole/tags/themes/">themes</a>       
+                  <a class="tag" v-for = 'tag in item.tags' href='tag.tag_url'>{{ tag.tag_name }}</a>     
                 </div>
               </div>
             </div>
@@ -83,42 +80,70 @@
           title: 'Markdown Syntax Guide',
           content: 'This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.',
           date: 'Mon, Mar 11, 2019',
-          tags: []
+          tags: [{
+            tag_url: 'https://themes.gohugo.io//theme/anatole/tags/markdown/',
+            tag_name: 'markdown'
+          },
+          {
+            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/css/',
+            tag_name: 'css'
+          },
+          {
+            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/themes/',
+            tag_name: 'themes'
+          }]
         },
         {
           url: "https://themes.gohugo.io//theme/anatole/post/markdown-syntax/",
           title: 'Markdown Syntax Guide',
           content: 'This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.',
           date: 'Mon, Mar 11, 2019',
-          tags: []
-        },
-        {
+          tags: [{
+            tag_url: 'https://themes.gohugo.io//theme/anatole/tags/markdown/',
+            tag_name: 'markdown'
+          },
+          {
+            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/css/',
+            tag_name: 'css'
+          },
+          {
+            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/themes/',
+            tag_name: 'themes'
+          }]
+        },{
           url: "https://themes.gohugo.io//theme/anatole/post/markdown-syntax/",
           title: 'Markdown Syntax Guide',
           content: 'This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.',
           date: 'Mon, Mar 11, 2019',
-          tags: []
-        },
-        {
+          tags: [{
+            tag_url: 'https://themes.gohugo.io//theme/anatole/tags/markdown/',
+            tag_name: 'markdown'
+          },
+          {
+            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/css/',
+            tag_name: 'css'
+          },
+          {
+            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/themes/',
+            tag_name: 'themes'
+          }]
+        },{
           url: "https://themes.gohugo.io//theme/anatole/post/markdown-syntax/",
           title: 'Markdown Syntax Guide',
           content: 'This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.',
           date: 'Mon, Mar 11, 2019',
-          tags: []
-        },
-        {
-          url: "https://themes.gohugo.io//theme/anatole/post/markdown-syntax/",
-          title: 'Markdown Syntax Guide',
-          content: 'This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.',
-          date: 'Mon, Mar 11, 2019',
-          tags: []
-        },
-        {
-          url: "https://themes.gohugo.io//theme/anatole/post/markdown-syntax/",
-          title: 'Markdown Syntax Guide',
-          content: 'This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.',
-          date: 'Mon, Mar 11, 2019',
-          tags: []
+          tags: [{
+            tag_url: 'https://themes.gohugo.io//theme/anatole/tags/markdown/',
+            tag_name: 'markdown'
+          },
+          {
+            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/css/',
+            tag_name: 'css'
+          },
+          {
+            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/themes/',
+            tag_name: 'themes'
+          }]
         },
       ]
       }
