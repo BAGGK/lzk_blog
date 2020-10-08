@@ -1,47 +1,33 @@
 <script src="vue.js"></script>
 
-<div id='app'>
-  <h2>{{ count }}</h2>
-  <cpn @add-count='count++' @minus-count='count--'></cpn>
-</div>
-
-
 <template id='child-template'>
   <div>
-    <button @click='increase'>+</button>
-    <button @click='decrease'>-</button>
+    <p>come from child</p>
+    <slot></slot>
   </div>
 </template>
+
+<script>
+  const cpn = {
+    template: '#child-template',
+  }
+</script>
+
+<!-- main -->
+<div id='app'>
+  <cpn><button>1</button></cpn>
+  <cpn><button>2</button></cpn>
+  <cpn></cpn>
+</div>
 
 
 
 <script>
-
-  const cpn = {
-    template: '#child-template',
-
-    methods: {
-      increase(){
-        this.$emit('add-count')
-        console.log('add')
-      },
-
-      decrease(){
-        this.$emit('minus-count')
-      }
-    }
-
-  }
-
+  c
   new Vue({
     el: '#app',
-
     components: {
       cpn
     },
-
-    data: {
-      count: 0
-    }
   })
 </script>
