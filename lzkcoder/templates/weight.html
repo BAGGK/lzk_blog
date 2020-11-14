@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>lzkcoder's blog</title>
+<link rel="stylesheet" href="blog.css">
+<script src="vue.js"></script>
+<script src="echarts.min.js"></script>
+</head>
+
+<body>
+
+<div>
+    <div id="main" class="fitness_chart"></div>
+
+    <div id="input-weight">
+    <form action="http://127.0.0.1:5000/fitness" method="post">
+        <label>体重：<input type="text" name="weight" placeholder=""/></label>
+        <input type="submit" value="Submit">
+    </form>
+    </div>
+</div>
+
+
+
+<script>
+
+    const myChart = echarts.init(document.getElementById('main'));
+    option = {
+    xAxis: {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        type: 'line'
+    }]
+    };
+    myChart.setOption(option);
+</script>
+
+<script>
+   const app = new Vue({
+       el: '#input-weight',
+       data: {
+           message: 'hello you',
+           seen: 1
+       },
+       methods:{
+           nor: function() {
+               this.seen = ! this.seen
+           }
+       }
+   })
+</script>
+
+</body>
+</html>

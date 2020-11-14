@@ -1,0 +1,241 @@
+:root {
+  --bg-color: #fff;
+  --secondary-bg-color: #eeeeee;
+  --heading-color: #5f5f5f;
+  --body-color: rgba(0, 0, 0, 0.7);
+  --post-color: rgba(0, 0, 0, 0.44);
+  --border-color: rgba(0, 0, 0, 0.15);
+  --pre-bg-color: #f9f9fd;
+  --nav-text-color: #5a5a5a;
+  --tag-color: #424242;
+  --blockquote-text-color: #858585;
+  --blockquote-border-color: #dfe2e5;
+  scroll-padding-top: 100px;
+}
+
+html {
+  background-color: var(--bg-color);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+    color: rgba(0, 0, 0, 0.7);;
+    font-family: verdana,sans-serif;
+    font-size: 15px;
+    width: 100%;
+    margin: 0 auto 30px;
+    background-color: var(--bg-color);
+    
+}
+
+a {
+  text-decoration: none;
+}
+
+a:link, a:visited {
+  opacity: 1;
+  color: var(--tag-color);
+}
+
+p {
+  line-height: 1.9em;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+div{
+  display: block;
+}
+
+
+.sidebar{
+  width: 40%;
+  background-size: cover;
+  background-color: #fff;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  z-index: 4;
+  /* border-right: 1px solid var(--border-color); */
+  border-right:  1px solid rgba(0,0,0,0.15);
+}
+
+.sidebar .logo-title {
+  text-align: center;
+  padding-top: 240px;
+}
+
+.sidebar .logo-title .title img {
+  width: 127px;
+  border-radius: 50%;
+}
+
+.sidebar .logo-title .title h3 {
+  text-transform: uppercase;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1;
+  margin: 1em;
+}
+.sidebar .logo-title .title a {
+  text-decoration: none;
+  color: #5f5f5f;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.sidebar .social-links {
+  list-style: none;
+  padding: 0;
+  font-size: 14px;
+  text-align: center;
+}
+
+.sidebar .social-links li {
+  display: inline;
+  padding: 0 4px;
+  line-height: 0;
+}
+
+.footer {
+  clear: both;
+  text-align: center;
+  font-size: 10px;
+  margin: 0 auto;
+  bottom: 0;
+  position: absolute;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+
+
+
+/* main  */
+.page-top {
+  width: 60%;
+  position: fixed;
+  right: 0;
+  z-index: 3;
+  background-color: var(--bg-color);
+  height: 60px;
+  /* border-bottom: 1px solid var(--border-color); */
+  border-bottom:  1px solid rgba(0,0,0,0.15);
+}
+
+.page-top .nav {
+  list-style: none;
+  padding: 11px 30px;
+  float: left;
+  font-size: 12px;
+  display: block;
+  width: calc(100% - 30px);
+}
+
+.page-top .nav a {
+  color: var(--nav-text-color);
+}
+
+.page-top .nav a.current {
+  color: var(--nav-text-color);
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgb(90, 90, 90);
+}
+
+.page-top .nav li {
+  position: relative;
+  display: initial;
+  padding-right: 20px;
+}
+
+.content {
+  height: auto;
+  float: right;
+  width: 60%;
+  margin-top: 60px;
+}
+
+.post {
+  background-color: var(--bg-color);
+  margin: 30px;
+}
+
+.post .post-title h3 {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--heading-color);
+  font-size: 22px;
+  margin: 0;
+}
+
+.post .post-title a {
+  text-decoration: none;
+  letter-spacing: 1px;
+  color: var(--heading-color);
+}
+
+.post .post-footer {
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.post .post-footer .meta {
+  max-width: 100%;
+  display: flex;
+  color: #bbb;
+}
+
+.info {
+  margin: 1em;
+}
+
+.post .post-footer .meta .info {
+  float: left;
+  font-size: 12px;
+  margin-bottom: 1em;
+  color: var(--body-color);
+}
+
+.post .post-footer .meta i {
+  margin-right: 6px;
+}
+
+.post .post-footer .meta .info .date {
+  margin-right: 10px;
+}
+
+
+
+/* 太阳 */
+.fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit; 
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.info i {
+  opacity: .5;
+  margin-right: 5px;
+}
+
+.tag::before {
+  content: "#";
+  opacity: .5;
+}
+
+.post .post-footer .meta a {
+  text-decoration: none;
+  color: var(--body-color);
+  padding-right: 10px;
+}
+
+.fa-sun-o:before {
+  content: "\f185";
+}
