@@ -1,11 +1,13 @@
-from flask import Flask
+"""
+    control the access of web
+"""
 
-app = Flask(__name__)
+from config import app
 
 
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
+def index():
+    return 'hello'
 
 
 if __name__ == '__main__':

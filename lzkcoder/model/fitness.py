@@ -36,6 +36,10 @@ class Fitness(db.Model):
 
     @staticmethod
     def find_all(find_days=30):
+        """
+
+        :rtype: list[Fitness]
+        """
         return db.session.query(Fitness).all()[:find_days]
 
 
@@ -46,4 +50,5 @@ class FitnessFilter(object):
 if __name__ == '__main__':
     # db.drop_all()
     # db.create_all()
+    temp_var = Fitness.q
     pass

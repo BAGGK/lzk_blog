@@ -1,0 +1,1 @@
+import fitness_view
