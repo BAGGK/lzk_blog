@@ -1,12 +1,9 @@
-from flask import Flask, views, render_template
+# coding: utf-8
+from markdown import markdown
+import sys
 
-app = Flask(__name__)
+fd = open('../posts/test_file.md').read().decode('utf-8')
+md = '# hello , wor力争'
+md = md.decode('utf-8')
 
-
-@app.route('/')
-def index():
-    user = {
-        'username': 'lzk',
-        'bio': 'A bo who loves movies and music'
-    }
-    return render_template('../templates/index.html')
+print markdown(fd)

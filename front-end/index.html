@@ -6,9 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="blog.css">
   <script src="vue.js"></script>
-
+  <script src="jquery-3.5.1.min.js"></script>
   <title>lzk's blog</title>
-
 </head>
 
 <body>
@@ -40,6 +39,7 @@
         <li><a :class="{current: current_page==0}" @click='current_page=0' href="#">Home</a></li>
         <li><a :class="{current: current_page==1}" @click='current_page=1' href='#'>Posts</a></li>
         <li><a :class="{current: current_page==2}" @click='current_page=2' href="#">About</a></li>
+        <li><a href="weight_chart.html">Fitness</a></li>
       </ul>
     </div>
 
@@ -72,84 +72,19 @@
 
 <!-- vue.js 的脚本 -->
   <script>
-    const app = new Vue({
-      el: '#main',
-      data: {
-        current_page: 0,
-        posts: [{
-          url: "https://themes.gohugo.io//theme/anatole/post/markdown-syntax/",
-          title: 'Markdown Syntax Guide',
-          content: 'This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.',
-          date: 'Mon, Mar 11, 2019',
-          tags: [{
-            tag_url: 'https://themes.gohugo.io//theme/anatole/tags/markdown/',
-            tag_name: 'markdown'
-          },
-          {
-            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/css/',
-            tag_name: 'css'
-          },
-          {
-            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/themes/',
-            tag_name: 'themes'
-          }]
-        },
-        {
-          url: "https://themes.gohugo.io//theme/anatole/post/markdown-syntax/",
-          title: 'Markdown Syntax Guide',
-          content: 'This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.',
-          date: 'Mon, Mar 11, 2019',
-          tags: [{
-            tag_url: 'https://themes.gohugo.io//theme/anatole/tags/markdown/',
-            tag_name: 'markdown'
-          },
-          {
-            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/css/',
-            tag_name: 'css'
-          },
-          {
-            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/themes/',
-            tag_name: 'themes'
-          }]
-        },{
-          url: "https://themes.gohugo.io//theme/anatole/post/markdown-syntax/",
-          title: 'Markdown Syntax Guide',
-          content: 'This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.',
-          date: 'Mon, Mar 11, 2019',
-          tags: [{
-            tag_url: 'https://themes.gohugo.io//theme/anatole/tags/markdown/',
-            tag_name: 'markdown'
-          },
-          {
-            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/css/',
-            tag_name: 'css'
-          },
-          {
-            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/themes/',
-            tag_name: 'themes'
-          }]
-        },{
-          url: "https://themes.gohugo.io//theme/anatole/post/markdown-syntax/",
-          title: 'Markdown Syntax Guide',
-          content: 'This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.',
-          date: 'Mon, Mar 11, 2019',
-          tags: [{
-            tag_url: 'https://themes.gohugo.io//theme/anatole/tags/markdown/',
-            tag_name: 'markdown'
-          },
-          {
-            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/css/',
-            tag_name: 'css'
-          },
-          {
-            tags_url: 'https://themes.gohugo.io//theme/anatole/tags/themes/',
-            tag_name: 'themes'
-          }]
-        },
-      ]
-      }
-    });
+    $.get({
+      url: 'http://127.0.0.1:5000/',
+      type: 'GET',
+      success: function (data, status) {
 
+        data = $.parseJSON(data)
+        const app = new Vue({
+          el: '#main',
+          data: data
+        });
+      }
+    })
+    
   </script>
 </body>
 

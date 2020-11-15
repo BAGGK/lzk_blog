@@ -1,5 +1,6 @@
 from config import db
 import time
+import flask_sqlalchemy
 
 
 def formatted_time():
@@ -32,7 +33,7 @@ class Fitness(db.Model):
     @staticmethod
     def find_one(date, filters=None):
         return db.session.query(Fitness). \
-            filter(Fitness.date == date).all()[0]
+            filter(Fitness.date == date).first()
 
     @staticmethod
     def find_all(find_days=30):
@@ -48,7 +49,6 @@ class FitnessFilter(object):
 
 
 if __name__ == '__main__':
-    # db.drop_all()
-    # db.create_all()
-    temp_var = Fitness.q
-    pass
+    temp_var = db.session.query(Fitness)  # type: flask_sqlalchemy.BaseQuery
+    var_1 = temp_var.filter(Fitness.date == '2020-10-01')  # type: flask_sqlalchemy.BaseQuery
+    print var_1.first()

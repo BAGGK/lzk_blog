@@ -5,10 +5,6 @@
 from config import app
 
 
-@app.route('/')
-def index():
-    return 'hello'
-
-
 if __name__ == '__main__':
-    app.run()
+    app.run(view_package='views')
+
