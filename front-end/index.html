@@ -69,23 +69,26 @@
     </div>
   </div>
 
-
-<!-- vue.js 的脚本 -->
-  <script>
-    $.get({
-      url: 'http://127.0.0.1:5000/',
-      type: 'GET',
-      success: function (data, status) {
-
-        data = $.parseJSON(data)
-        const app = new Vue({
-          el: '#main',
-          data: data
-        });
-      }
+<script>
+  var create_vue = function(data){
+    const app = new Vue({
+      el: '#main',
+      data: data
     })
-    
-  </script>
+    return app
+  }
+</script>
+<!-- vue.js 的脚本 -->
+<script>
+  $.get({
+    url: 'http://127.0.0.1:5000/posts_head',
+    type: 'GET',
+    success: function (data, status) {
+      data = $.parseJSON(data)
+      create_vue(data)
+    }
+  })
+</script>
 </body>
 
 </html>

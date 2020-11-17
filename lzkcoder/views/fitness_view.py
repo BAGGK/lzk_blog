@@ -6,14 +6,7 @@ from model import Fitness
 import markdown
 from config import app
 import time
-
-
-def date_change(date, interval):
-    time_tuple = time.strptime(date, '%Y-%m-%d')
-    time_s = time.mktime(time_tuple) + interval * 60 * 60 * 24
-    new_date = time.strftime('%Y-%m-%d', time.localtime(time_s))
-
-    return new_date
+import tool
 
 
 class FitnessView(View):
@@ -40,15 +33,15 @@ class FitnessView(View):
 
     @staticmethod
     def post():
-        data = request.get_data()
-        weight = data.split('=')[1]
-        weight = float(weight)
+        weight = request.form['input_weight']
 
-        if weight < 100:
-            weight *= 2
+        weight = tool.safe_float(weight)
+        if weight is None:
+            return '请输入数字', 400
 
+        weight = weight * 2 if weight < 100 else weight
         Fitness.push(weight)
-        return str(weight)
+        return 'ok', 200
 
 
 class IsFitnessInput(View):
@@ -63,7 +56,7 @@ class IsFitnessInput(View):
         current_data = time.strftime('%Y-%m-%d')
         temp_var = Fitness.find_one(current_data)
         if temp_var is None:
-            print '0'
+            return '0'
         else:
             return '1'
 
@@ -76,54 +69,11 @@ class IndexView(View):
 
     @staticmethod
     def get():
-        ret_val = {
-            'current_page': 0,
-            'posts': [
-                {
-                    'url': "https://themes.gohugo.io//theme/anatole/post/markdown-syntax/",
-                    'title': 'Markdown Syntax Guide',
-                    'content': 'This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.',
-                    'date': 'Mon, Mar 11, 2019',
-                    'tags': [{
-                        'tag_url': 'https://themes.gohugo.io//theme/anatole/tags/markdown/',
-                        'tag_name': 'markdown'
-                    },
-                        {
-                            'tags_url': 'https://themes.gohugo.io//theme/anatole/tags/css/',
-                            'tag_name': 'css'
-                        },
-                        {
-                            'tags_url': 'https://themes.gohugo.io//theme/anatole/tags/themes/',
-                            'tag_name': 'themes'
-                        }
-                    ]
-                }, {
-                    'url': "https://themes.gohugo.io//theme/anatole/post/markdown-syntax/",
-                    'title': 'python 语法',
-                    'content': '这遍文章主要是介绍 python 的基础语法。比如 列表 字典 元组 集合',
-                    'date': 'Mon, Mar 11, 2019',
-                    'tags': [{
-                        'tag_url': 'https://themes.gohugo.io//theme/anatole/tags/markdown/',
-                        'tag_name': 'markdown'
-                    },
-                        {
-                            'tags_url': 'https://themes.gohugo.io//theme/anatole/tags/css/',
-                            'tag_name': 'css'
-                        },
-                        {
-                            'tags_url': 'https://themes.gohugo.io//theme/anatole/tags/themes/',
-                            'tag_name': 'themes'
-                        }
-                    ]
-                }]}
-        temp_var = ret_val['posts']
-        print temp_var
-
-        return json.dumps(ret_val)
+        return 'hello'
 
 
 class LoginView(View):
-    "/login"
+    """/login"""
     method = ['get', 'post']
 
     @staticmethod

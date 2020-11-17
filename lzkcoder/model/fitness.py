@@ -49,6 +49,4 @@ class FitnessFilter(object):
 
 
 if __name__ == '__main__':
-    temp_var = db.session.query(Fitness)  # type: flask_sqlalchemy.BaseQuery
-    var_1 = temp_var.filter(Fitness.date == '2020-10-01')  # type: flask_sqlalchemy.BaseQuery
-    print var_1.first()
+    pass
