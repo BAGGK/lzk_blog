@@ -48,4 +48,5 @@ class FitnessFilter(object):
 
 
 if __name__ == '__main__':
-    pass
+    db.drop_all()
+    db.create_all()

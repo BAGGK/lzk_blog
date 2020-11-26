@@ -83,6 +83,5 @@ class Posts(db.Model):
             return None
 
 
-if __name__ == '__main__':
-    db.drop_all()
-    db.create_all()
+db.create_all()
+

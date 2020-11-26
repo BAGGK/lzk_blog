@@ -76,3 +76,14 @@ class PostContentView(View):
         if posts_uuid:
             return Posts.get_html(posts_uuid)
         return '400'
+
+
+class IndexView(View):
+    """
+    /
+    """
+    methods = ['GET']
+
+    @staticmethod
+    def get():
+        return 'index hello'
