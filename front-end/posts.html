@@ -37,7 +37,7 @@
   <div class="main" id='main'>
     <div class="page-top">
       <ul class='nav'>
-        <li><a :class="{current: current_page==0}" @click='current_page=0' href="index.htm">Home</a></li>
+        <li><a :class="{current: current_page==0}" @click='current_page=0' href="index.html">Home</a></li>
         <li><a :class="{current: current_page==1}" @click='current_page=1' href='#'>Posts</a></li>
         <li><a :class="{current: current_page==2}" @click='current_page=2' href="#">About</a></li>
         <li><a href="weight_chart.html">Fitness</a></li>
@@ -68,7 +68,7 @@
       type: 'GET',
 
       // url: 'http://127.0.0.1:5000/post_content?posts_id=f833131ae7b842b9be14d4c35b936a4f',
-      url: 'http://127.0.0.1:5000/post_content?'+id,
+      url: 'http://182.254.228.53:5000/post_content?'+id,
       success: function(data){
         var p = document.getElementById('posts_content')
         p.innerHTML = data

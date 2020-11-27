@@ -1,11 +1,12 @@
 <script src="jquery-3.5.1.min.js"></script>
 <script src="echarts.min.js"></script>
 
+<script>
+  let url = 'http://182.254.228.53:5000'
 </script>
-
 <script>
   $.ajax({
-    url: 'http://127.0.0.1:5000/fitness',
+    url: url+'/fitness',
     type: 'GET',
     success: function(data, status){
       data = jQuery.parseJSON(data)
@@ -38,7 +39,7 @@
         }
       })
     $.ajax({
-      url: 'http://127.0.0.1:5000/is_fitness_input/',
+      url: url+'/is_fitness_input/',
       type: 'GET',
       success: function(data, status){
         if(data == 1)
@@ -51,7 +52,7 @@
 <div id="main" style="width: 600px;height:400px;"></div>
 
 <div id='temp_div'>
-  <form action="http://127.0.0.1:5000/fitness" method="POST">
+  <form action="http://182.254.228.53:5000/fitness" method="POST">
   <label for="input_weight">体重</label>
     <input type="text" name="input_weight">
     <input type='submit'>
