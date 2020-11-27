@@ -1,4 +1,3 @@
-# coding: utf-8
 from liweb import View
 from flask import request
 from setting import app
@@ -6,6 +5,7 @@ from .model import Posts
 import time
 import flask
 import uuid
+import os
 
 from werkzeug.datastructures import FileStorage
 
@@ -18,14 +18,18 @@ class FileUpload(View):
     @staticmethod
     def post():
         net_fd = request.files['file_name']  # type: FileStorage
+
+        save_path = app.root_path + '/save_file/'
+        if not os.path.exists(save_path):
+            os.mkdir(save_path)
         file_save_name = uuid.uuid4().hex
-        save_path = app.root_path + '/posts/' + str(file_save_name)
-        net_fd.save(save_path)
+        save_file = save_path + str(file_save_name)
+        net_fd.save(save_file)
         net_fd.close()
 
-        tags_list = ['python']
-        fd = open(save_path)
+        fd = open(save_file)
 
+        tags_list = ['python']
         Posts.push(fd, tags_list)
         return "ok", 200
 

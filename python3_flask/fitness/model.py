@@ -46,7 +46,3 @@ class Fitness(db.Model):
 class FitnessFilter(object):
     pass
 
-
-if __name__ == '__main__':
-    db.drop_all()
-    db.create_all()
