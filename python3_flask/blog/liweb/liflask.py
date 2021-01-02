@@ -48,7 +48,6 @@ class LiFlask(Flask):
                 # 获取 蓝图，如果配置了则使用配置了的，如果没有则新建
                 blue_var = self.get_bp(model)
                 class_list = inspect.getmembers(sys.modules[model + '.view'], inspect.isclass)
-                print(class_list)
                 for item_name, item_class in class_list:
                     if issubclass(item_class, View) and item_name != 'View':
                         try:

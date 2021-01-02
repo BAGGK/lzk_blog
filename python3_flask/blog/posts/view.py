@@ -10,46 +10,65 @@ import wtforms
 from werkzeug.datastructures import FileStorage
 
 
-class FileUpload(View):
-    """/file_upload"""
+class FileContext(object):
 
-    methods = ["POST", 'GET']
+    def __init__(self, up_name):
+        self.fs_list = request.files.getlist(up_name)
+        self.tags = request.form.get('posts_tags', None)
 
-    @staticmethod
-    def get():
-        pass
+    def save(self):
+        each_file: FileStorage
 
-    @staticmethod
-    def post():
-        net_fd = request.files.get('file_name', None)  # type: FileStorage
-        tags = request.form.get('tags', None)
-        if net_fd is None:
-            return 'You must input a file', 400
-
-        if tags is None:
-            tags = ''
-
-        tags_list = json.loads(tags)
-        # 保存文件到本地
-        save_file = FileUpload.__save_file(net_fd)
-        net_fd.close()
-
-        # 解析文件，并且存入数据库
-        fd = open(save_file)
-        Posts.push(fd, tags_list)
-        for item_tag in tags_list:
-            PostsTag(posts_uuid=os.path.basename(fd.name), posts_tag=item_tag).push()
-        return "upload file success", 200
-
-    @staticmethod
-    def __save_file(net_fd):
-        save_path = app.root_path + '/save_file/'
+        save_path = app.root_path + '/posts/save_file/'
         if not os.path.exists(save_path):
             os.mkdir(save_path)
         file_save_name = uuid.uuid4().hex
         save_file = save_path + str(file_save_name)
-        net_fd.save(save_file)
-        return save_file
+
+        for each_file in self.fs_list:
+            each_file.save(save_file)
+
+
+
+class FileUpload(View):
+    """/file_upload/"""
+
+    methods = ["POST", 'GET']
+
+    @staticmethod
+    def post():
+        file_handle = FileContext(up_name='file_name')
+        file_handle.save()
+        return "upload file success", 200
+        # net_fd = request.files.get('file_name', None)  # type: FileStorage
+        # tags = request.form.get('tags', None)
+        # if net_fd is None:
+        #     return 'You must input a file', 400
+        #
+        # if tags is None:
+        #     tags = ''
+        #
+        # tags_list = json.loads(tags)
+        # # 保存文件到本地
+        # save_file = FileUpload.__save_file(net_fd)
+        # net_fd.close()
+        #
+        # # 解析文件，并且存入数据库
+        # fd = open(save_file)
+        # Posts.push(fd, tags_list)
+        # for item_tag in tags_list:
+        #     PostsTag(posts_uuid=os.path.basename(fd.name), posts_tag=item_tag).push()
+        # return "upload file success", 200
+
+    # @staticmethod
+    # def __save_file(net_fd):
+    #     save_path = app.root_path + '/save_file/'
+    #     if not os.path.exists(save_path):
+    #         os.mkdir(save_path)
+    #     file_save_name = uuid.uuid4().hex
+    #     save_file = save_path + str(file_save_name)
+    #     net_fd.save(save_file)
+    #     return save_file
 
 
 class PostsHeadView(View):
@@ -89,7 +108,7 @@ class PostsHeadView(View):
 
 
 class PostContentView(View):
-    """/post_content/"""
+    """/posts_content/"""
 
     methods = ['GET']
 
