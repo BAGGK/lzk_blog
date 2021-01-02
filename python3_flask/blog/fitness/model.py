@@ -1,4 +1,4 @@
-from setting import db
+from blog import db
 import time
 
 

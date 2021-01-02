@@ -1,19 +1,20 @@
-# coding: utf-8
-from setting import db
+from blog import db
 import os
 import markdown
-from flask_sqlalchemy import BaseQuery
+import json
+from sqlalchemy.orm import relationship
+
+"""
+Posts 表 ｜ PostsTag 表
+
+"""
 
 
 class Posts(db.Model):
-    posts_uuid = db.Column(db.String, primary_key=True)
-    posts_title = db.Column(db.String)
-    posts_head = db.Column(db.String)
-    posts_ctime = db.Column(db.BigInteger, index=True)
-    posts_mtime = db.Column(db.BigInteger)
-    posts_tags = db.Column(db.String)
-    # posts_filename = db.Column(db.String, nullable=False)
-    posts_html = db.Column(db.String)
+    posts_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    posts_filename = db.Column(db.String(128), nullable=False)
+    posts_path = db.Column(db.String(128))
+    posts_file_create = db.Column(db.BigInteger)
 
     def __init__(self, fd, posts_tags):
         """
@@ -29,7 +30,7 @@ class Posts(db.Model):
         self.posts_head = posts_head
         self.posts_ctime = posts_ctime
         self.posts_mtime = posts_mtime
-        self.posts_tags = posts_tags
+        self.posts_tags = json.dumps(posts_tags)
         # self.posts_filename = file_name
         self.posts_html = self.__md_to_html()
 
@@ -37,7 +38,10 @@ class Posts(db.Model):
         self.fd.seek(0)
         md_unicode = self.fd.read()
 
-        return markdown.markdown(md_unicode, extensions=['markdown.extensions.extra', 'markdown.extensions.codehilite'])
+        return markdown.markdown(
+            md_unicode,
+            extensions=['markdown.extensions.extra', 'markdown.extensions.codehilite']
+        )
 
     def __parse_file_head(self):
         fd = self.fd
@@ -52,8 +56,18 @@ class Posts(db.Model):
 
     # 以下是外部接口
     @staticmethod
-    def get_recent_posts(limit_num=30):
-        return Posts.query.order_by(Posts.posts_ctime).limit(limit_num).all()
+    def get_recent_posts(limit_num=30, *tags):
+        posts_query = Posts.make_condition(Posts.query, *tags)
+        return posts_query.order_by(Posts.posts_ctime).limit(limit_num).all()
+
+    @staticmethod
+    def make_condition(var_q, *tags):
+        """
+
+        :type var_q: flask_sqlalchemy.BaseQuery
+        """
+        # 这个函数需要连表
+        return var_q
 
     @staticmethod
     def push(fd, tags):
@@ -76,20 +90,30 @@ class Posts(db.Model):
             return None
 
 
-class kPosts(db.Model):
-    posts_uuid = db.Column(db.String, primary_key=True)
-    posts_title = db.Column(db.String)
-    posts_head = db.Column(db.String)
-    posts_ctime = db.Column(db.BigInteger, index=True)
-    posts_mtime = db.Column(db.BigInteger)
-    # posts_tags = db.Column(db.String)
-    # posts_filename = db.Column(db.String, nullable=False)
-    posts_html = db.Column(db.String)
+class PostsTag(db.Model):
+    posts_id = db.Column(db.Integer, primary_key=True)
+    tag_name = db.Column(db.String(128), primary_key=True)
 
-    def __init__(self, post_str):
+    def __init__(self, posts_tag, posts_uuid):
+        self.posts_uuid = posts_uuid
+        self.posts_tag = posts_tag
+
+    def push(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def find_by_tags(*tags):
+        ret_list = []
+        for item_tag in tags:
+            post_tag_list = PostsTag.query.filter_by(posts_tag=item_tag).all()
+            ret_list.extend(post_tag_list)
+
+        return list(set(ret_list))
+
+
+class PostsManage(object):
+
+    def __init__(self, posts_id):
         pass
 
-
-# class PostsTag(db.Model):
-#     posts_tag = db.Column(db.String, primary_key=True)
-#     posts_uuid = db.Column(db.String)

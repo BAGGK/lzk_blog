@@ -1,45 +1,66 @@
-from liweb import View
-from flask import request
-from setting import app
-from .model import Posts
+from blog.liweb import View
+from flask import request, json
+from blog import app
+from .model import Posts, PostsTag
 import time
 import flask
 import uuid
 import os
-
+import wtforms
 from werkzeug.datastructures import FileStorage
 
 
 class FileUpload(View):
     """/file_upload"""
 
-    methods = ["POST"]
+    methods = ["POST", 'GET']
+
+    @staticmethod
+    def get():
+        pass
 
     @staticmethod
     def post():
-        net_fd = request.files['file_name']  # type: FileStorage
+        net_fd = request.files.get('file_name', None)  # type: FileStorage
+        tags = request.form.get('tags', None)
+        if net_fd is None:
+            return 'You must input a file', 400
 
+        if tags is None:
+            tags = ''
+
+        tags_list = json.loads(tags)
+        # 保存文件到本地
+        save_file = FileUpload.__save_file(net_fd)
+        net_fd.close()
+
+        # 解析文件，并且存入数据库
+        fd = open(save_file)
+        Posts.push(fd, tags_list)
+        for item_tag in tags_list:
+            PostsTag(posts_uuid=os.path.basename(fd.name), posts_tag=item_tag).push()
+        return "upload file success", 200
+
+    @staticmethod
+    def __save_file(net_fd):
         save_path = app.root_path + '/save_file/'
         if not os.path.exists(save_path):
             os.mkdir(save_path)
         file_save_name = uuid.uuid4().hex
         save_file = save_path + str(file_save_name)
         net_fd.save(save_file)
-        net_fd.close()
-
-        fd = open(save_file)
-
-        tags_list = ['python']
-        Posts.push(fd, tags_list)
-        return "ok", 200
+        return save_file
 
 
 class PostsHeadView(View):
-    """/posts_head"""
+    """/posts_head/"""
 
     @staticmethod
     def get():
-        db_list = Posts.get_recent_posts()
+        limit = request.form.get('limit', None)
+        tags_list = request.form.get('tags', None)
+
+        db_list = Posts.get_recent_posts(limit_num=limit)
         posts_list = []
         for each_item in db_list:  # type: PostHead
             item = PostsHeadView.parse_data_to_json(each_item)
@@ -57,20 +78,18 @@ class PostsHeadView(View):
         :type posts: PostHead
         """
         posts_time = time.strftime('%a, %b %d, %Y', time.localtime(posts.posts_ctime))
+
         return {
             'url': str(posts.posts_uuid),
             'title': posts.posts_title,
             'content': posts.posts_head,
             'date': posts_time,
-            'tags': [{
-                'tag_url': 'https://www.baidu.com',
-                'tag_name': 'python'
-            }]
+            'tags': json.loads(posts.posts_tags)
         }
 
 
 class PostContentView(View):
-    """/post_content"""
+    """/post_content/"""
 
     methods = ['GET']
 
@@ -84,7 +103,7 @@ class PostContentView(View):
 
 class IndexView(View):
     """
-    /
+    /index
     """
     methods = ['GET']
 

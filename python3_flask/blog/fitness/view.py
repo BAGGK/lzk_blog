@@ -1,10 +1,10 @@
 # coding: utf-8
 
-from liweb import View
+from blog.liweb import View
 from flask import request, json
 from .model import Fitness
 import time
-import tool
+from blog import tool
 
 
 class FitnessView(View):

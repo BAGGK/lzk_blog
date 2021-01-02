@@ -18,6 +18,9 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
+img{
+  width: 100%;
+}
 body {
     color: rgba(0, 0, 0, 0.7);;
     font-family: verdana,sans-serif;
