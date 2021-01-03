@@ -1,124 +1,80 @@
 from blog import db
-import os
-import markdown
-import json
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Session
+from .posts_context import PostsContext
+from werkzeug.datastructures import FileStorage
 
-"""
-Posts 表 ｜ PostsTag 表
-
-"""
+__all__ = ['PostManage']
 
 
-class Posts(db.Model):
+class DbBase(object):
+
+    def push(self):
+        session: Session = db.session
+
+        try:
+            session.add(self)
+            session.commit()
+        except Exception as e:
+            print(str(self.__class__) + 'push error:', e)
+            session.rollback()
+
+    def delete(self):
+        session: Session = db.session
+        try:
+            session.delete(self)
+            session.commit()
+        except Exception as e:
+            class_str = str(self.__class__)
+
+            print(class_str + 'delete error', e)
+
+
+class Posts(db.Model, DbBase):
     posts_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # 文件原来的名字
     posts_filename = db.Column(db.String(128), nullable=False)
+    # 文件的存储地址
     posts_path = db.Column(db.String(128))
-    posts_file_create = db.Column(db.BigInteger)
-    posts_uuid = db.Column(db.String(128))
-
-    # def __init__(self, fd, posts_tags):
-    #     """
-    #
-    #     :type fd: file
-    #     """
-    #     # 以下是实例传递参数
-    #     self.fd = fd
-    #     # end
-    #     posts_title, posts_head, posts_ctime, posts_mtime = self.__parse_file_head()
-    #     self.posts_uuid = os.path.basename(fd.name)
-    #     self.posts_title = posts_title
-    #     self.posts_head = posts_head
-    #     self.posts_ctime = posts_ctime
-    #     self.posts_mtime = posts_mtime
-    #     self.posts_tags = json.dumps(posts_tags)
-    #     # self.posts_filename = file_name
-    #     self.posts_html = self.__md_to_html()
-    #
-    # def __md_to_html(self):
-    #     self.fd.seek(0)
-    #     md_unicode = self.fd.read()
-    #
-    #     return markdown.markdown(
-    #         md_unicode,
-    #         extensions=['markdown.extensions.extra', 'markdown.extensions.codehilite']
-    #     )
-    #
-    # def __parse_file_head(self):
-    #     fd = self.fd
-    #
-    #     posts_title = fd.readline().lstrip('# ').strip()
-    #     posts_head = fd.readline().strip()
-    #     while posts_head == '':
-    #         posts_head = fd.readline().strip()
-    #     posts_ctime = os.path.getctime(fd.name)
-    #     posts_mtime = os.path.getmtime(fd.name)
-    #     return posts_title, posts_head, posts_ctime, posts_mtime
-    #
-    # # 以下是外部接口
-    # @staticmethod
-    # def get_recent_posts(limit_num=30, *tags):
-    #     posts_query = Posts.make_condition(Posts.query, *tags)
-    #     return posts_query.order_by(Posts.posts_ctime).limit(limit_num).all()
-    #
-    # @staticmethod
-    # def make_condition(var_q, *tags):
-    #     """
-    #
-    #     :type var_q: flask_sqlalchemy.BaseQuery
-    #     """
-    #     # 这个函数需要连表
-    #     return var_q
-    #
-    # @staticmethod
-    # def push(fd, tags):
-    #     new_data = Posts(fd, tags)
-    #     db.session.add(new_data)
-    #     db.session.commit()
-    #
-    # @staticmethod
-    # def pop(uuid):
-    #     Posts.query.filter_by(uuid)
-    #
-    # @staticmethod
-    # def get_html(uuid):
-    #     ret_var = db.session.query(Posts.posts_html).filter(Posts.posts_uuid == uuid).first()  # type: Posts
-    #
-    #     ret_var = '<link rel="stylesheet" href="blog.css">' + ret_var.posts_html
-    #     if ret_var:
-    #         return ret_var
-    #     else:
-    #         return None
 
 
-class PostsTag(db.Model):
+class PostsTag(db.Model, DbBase):
     posts_id = db.Column(db.Integer, primary_key=True)
     tag_name = db.Column(db.String(128), primary_key=True)
 
-    # def __init__(self, posts_tag, posts_uuid):
-    #     self.posts_uuid = posts_uuid
-    #     self.posts_tag = posts_tag
-    #
-    # def push(self):
-    #     db.session.add(self)
-    #     db.session.commit()
-    #
-    # @staticmethod
-    # def find_by_tags(*tags):
-    #     ret_list = []
-    #     for item_tag in tags:
-    #         post_tag_list = PostsTag.query.filter_by(posts_tag=item_tag).all()
-    #         ret_list.extend(post_tag_list)
-    #
-    #     return list(set(ret_list))
 
+class PostManage(object):
+    save_path = './post_file'
 
-class PostsManage(object):
+    def __init__(self, posts_content, posts_path=None):
+        self.posts_content: PostsContext = posts_content
+        self.save_path = posts_path if posts_path else PostManage.save_path
+        self.tags = tags
 
-    def __init__(self, posts_id):
+    def save(self):
+        filename = self.file_object.filename
+        save_path = self.save_path
+
+        posts_instance = Posts(posts_filename=filename, save_path=save_path)
+        db.session.add(posts_instance)
+        # 为了获取 posts_id
+        db.session.flush()
+
+        # 添加 tags
+        if self.tags:
+            for each_tag in self.tags:
+                tag_instance = PostsTag(posts_id=posts_instance.posts_id, tag_name=each_tag)
+                db.session.add(tag_instance)
+
+        try:
+            # 提交事务
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+
+    def __getitem__(self, item):
         pass
 
 
 if __name__ == '__main__':
-    db.drop_all()
-    db.create_all()
+    pass
