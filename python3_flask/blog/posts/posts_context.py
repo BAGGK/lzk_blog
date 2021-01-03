@@ -52,21 +52,17 @@ class PostsContext(object):
         """
         # 存入文件
         security_name = uuid4().hex
-        save_path = '../../file_storage/' + security_name
-        fd = open(save_path, mode='w')
+        save_path = '../file_storage/'
+        if not os.path.exists(save_path):
+            os.mkdir(save_path)
+
+        fd = open(save_path + security_name, mode='w')
         fd.write(self.content)
         fd.close()
 
-        # 填入数据
-        self.up_time = os.path.getctime(save_path)
-
         # 存入db
-        posts_db = PostsStoreDB(
-            posts_filename=self.title,
-            posts_path=save_path,
-            *self.tags
-        )
-        posts_db.push()
+        posts_db = PostsStoreDB(self.title, save_path, *self.tags)
+        posts_db.save()
 
     @staticmethod
     def __content_to_html(content):
@@ -99,9 +95,9 @@ class FileAdapterPosts(PostsContext):
         content = ''.join(content)
 
         super(FileAdapterPosts, self).__init__(
-            posts_content=content,
-            posts_title=os.path.basename(self.fd.name),
-            posts_up_time=os.path.getctime(self.fd.name),
+            content,
+            os.path.basename(self.fd.name),
+            os.path.getctime(self.fd.name),
             *tags
         )
 
@@ -110,14 +106,10 @@ class FileStorageAdapterPosts(PostsContext):
     def __init__(self, fd, *tags):
         fd: FileStorage
 
-        content = fd.stream.read()
+        content = fd.stream.read().decode('utf-8')
         title = fd.filename
 
-        super(FileStorageAdapterPosts, self).__init__(
-            posts_content=content,
-            posts_title=title,
-            *tags
-        )
+        super(FileStorageAdapterPosts, self).__init__(content, title, None, *tags)
 
 
 if __name__ == '__main__':

@@ -26,6 +26,18 @@ class DbBase(object):
 
             print(class_str + 'delete error', e)
 
+    @classmethod
+    def get_list(cls, page=0, limit=10):
+        session: Session = db.session
+        """
+        如果 limit = 0 , 则代表不限制
+        """
+        if limit == 0:
+            ret_data = session.query(cls).all()
+        else:
+            ret_data = session.query(cls).limit(limit).offset(page * limit).all()
+        return ret_data
+
 
 class Posts(db.Model, DbBase):
     posts_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -52,7 +64,7 @@ class PostsStoreDB(object):
         self.path = posts_path
         self.t_list = tags_list
 
-    def push(self):
+    def save(self):
 
         # 不实用 BaseDb push 的原因是为了建立事务
         posts_db = Posts(posts_filename=self.filename, posts_path=self.path)
@@ -68,7 +80,3 @@ class PostsStoreDB(object):
         except Exception as e:
             print('PostStoreDb error', e)
             db.session.rollback()
-
-
-if __name__ == '__main__':
-    pass

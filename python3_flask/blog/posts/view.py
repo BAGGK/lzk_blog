@@ -3,12 +3,21 @@ from flask import request, json
 import time
 from .posts_context import FileStorageAdapterPosts
 from werkzeug.datastructures import FileStorage
+from .model import PostsTag
 
 
 class FileUpload(View):
     """/file_upload/"""
 
-    methods = ["POST"]
+    methods = ["GET", "POST"]
+
+    @staticmethod
+    def get():
+        tag_list = PostsTag.get_list()
+
+        for tag in tag_list:
+            print(tag)
+        return 'hello', 200
 
     @staticmethod
     def post():
