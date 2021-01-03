@@ -1,8 +1,7 @@
 from blog.liweb import View
 from flask import request, json
-from blog import app
-from .model import Posts, PostsTag
 import time
+from .posts_context import FileStorageAdapterPosts
 from werkzeug.datastructures import FileStorage
 
 
@@ -13,6 +12,13 @@ class FileUpload(View):
 
     @staticmethod
     def post():
+        f_list = request.files.getlist('file_name')
+        tags = request.form.get('posts_tags')
+
+        for file_instance in f_list:
+            file_instance: FileStorage
+            posts_context = FileStorageAdapterPosts(file_instance, tags)
+            posts_context.save()
 
         return "upload file success", 200
 

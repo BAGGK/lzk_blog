@@ -1,5 +1,8 @@
 from markdown import markdown
 import os
+from .model import PostsStoreDB
+from uuid import uuid4
+from werkzeug.datastructures import FileStorage
 
 
 class PostsContext(object):
@@ -10,9 +13,9 @@ class PostsContext(object):
 
     def __init__(
             self, posts_content,
-            posts_title=None,
+            posts_title,
             posts_up_time=None,
-            posts_tags=None
+            *posts_tags
 
     ):
         # 以下是实例传递参数
@@ -20,10 +23,11 @@ class PostsContext(object):
         self.title = posts_title
         self.up_time = posts_up_time
         self.tags = posts_tags
+        self.introduction = None
 
     def get_file_introduction(self):
         """取出文件的简介部分"""
-        if hasattr(self, 'introduction'):
+        if self.introduction:
             return self.introduction
         else:
             self.introduction = self.__parse_introduction()
@@ -42,6 +46,28 @@ class PostsContext(object):
                 ret_val = each_line
         return ret_val
 
+    def save(self):
+        """
+        我总是纠结一些主动和被动的关系，这个类该不该有保存呢
+        """
+        # 存入文件
+        security_name = uuid4().hex
+        save_path = '../../file_storage/' + security_name
+        fd = open(save_path, mode='w')
+        fd.write(self.content)
+        fd.close()
+
+        # 填入数据
+        self.up_time = os.path.getctime(save_path)
+
+        # 存入db
+        posts_db = PostsStoreDB(
+            posts_filename=self.title,
+            posts_path=save_path,
+            *self.tags
+        )
+        posts_db.push()
+
     @staticmethod
     def __content_to_html(content):
         return markdown(content, extensions=['markdown.extensions.extra', 'markdown.extensions.codehilite'])
@@ -58,7 +84,7 @@ class PostsContext(object):
 
 class FileAdapterPosts(PostsContext):
 
-    def __init__(self, fd):
+    def __init__(self, fd, tags=None):
 
         if fd is str:
             self.fd = open(fd)
@@ -75,7 +101,22 @@ class FileAdapterPosts(PostsContext):
         super(FileAdapterPosts, self).__init__(
             posts_content=content,
             posts_title=os.path.basename(self.fd.name),
-            posts_up_time=os.path.getctime(self.fd.name)
+            posts_up_time=os.path.getctime(self.fd.name),
+            *tags
+        )
+
+
+class FileStorageAdapterPosts(PostsContext):
+    def __init__(self, fd, *tags):
+        fd: FileStorage
+
+        content = fd.stream.read()
+        title = fd.filename
+
+        super(FileStorageAdapterPosts, self).__init__(
+            posts_content=content,
+            posts_title=title,
+            *tags
         )
 
 

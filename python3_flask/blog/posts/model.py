@@ -1,9 +1,7 @@
 from blog import db
 from sqlalchemy.orm import Session
-from .posts_context import PostsContext
-from werkzeug.datastructures import FileStorage
 
-__all__ = ['PostManage']
+__all__ = ['Posts', 'PostsTag', 'PostsStoreDB']
 
 
 class DbBase(object):
@@ -42,38 +40,34 @@ class PostsTag(db.Model, DbBase):
     tag_name = db.Column(db.String(128), primary_key=True)
 
 
-class PostManage(object):
-    save_path = './post_file'
+class PostsStoreDB(object):
 
-    def __init__(self, posts_content, posts_path=None):
-        self.posts_content: PostsContext = posts_content
-        self.save_path = posts_path if posts_path else PostManage.save_path
-        self.tags = tags
+    def __init__(
+            self,
+            posts_filename,
+            posts_path,
+            *tags_list,
+    ):
+        self.filename = posts_filename
+        self.path = posts_path
+        self.t_list = tags_list
 
-    def save(self):
-        filename = self.file_object.filename
-        save_path = self.save_path
+    def push(self):
 
-        posts_instance = Posts(posts_filename=filename, save_path=save_path)
-        db.session.add(posts_instance)
-        # 为了获取 posts_id
-        db.session.flush()
+        # 不实用 BaseDb push 的原因是为了建立事务
+        posts_db = Posts(posts_filename=self.filename, posts_path=self.path)
+        db.session.add(posts_db)
+        db.session.flush()  # 从数据库获取posts_id
 
-        # 添加 tags
-        if self.tags:
-            for each_tag in self.tags:
-                tag_instance = PostsTag(posts_id=posts_instance.posts_id, tag_name=each_tag)
-                db.session.add(tag_instance)
+        for tag in self.t_list:
+            tag_db = PostsTag(posts_id=posts_db.posts_id, tag_name=tag)
+            db.session.add(tag_db)
 
         try:
-            # 提交事务
             db.session.commit()
         except Exception as e:
-            print(e)
+            print('PostStoreDb error', e)
             db.session.rollback()
-
-    def __getitem__(self, item):
-        pass
 
 
 if __name__ == '__main__':
