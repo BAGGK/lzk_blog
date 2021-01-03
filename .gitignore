@@ -3,3 +3,4 @@ python3_flask/.idea/
 python3_flask/save_file
 *pyc
 .DS_Store
+file_storage
