@@ -61,7 +61,7 @@ class PostsContext(object):
         fd.close()
 
         # 存入db
-        posts_db = PostsStoreDB(self.title, save_path, *self.tags)
+        posts_db = PostsStoreDB(self.title, save_path + security_name, *self.tags)
         posts_db.save()
 
     @staticmethod

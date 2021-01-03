@@ -3,7 +3,7 @@ from flask import request, json
 import time
 from .posts_context import FileStorageAdapterPosts
 from werkzeug.datastructures import FileStorage
-from .model import PostsTag
+from .model import TagIter, Tag
 
 
 class FileUpload(View):
@@ -13,20 +13,21 @@ class FileUpload(View):
 
     @staticmethod
     def get():
-        tag_list = PostsTag.get_list()
-
-        for tag in tag_list:
-            print(tag)
-        return 'hello', 200
+        tag_list = Tag.get_list(0)
+        ret_val = []
+        for tag_name in TagIter(tag_list):
+            ret_val.append(tag_name)
+        return json.dumps(ret_val), 200
 
     @staticmethod
     def post():
         f_list = request.files.getlist('file_name')
-        tags = request.form.get('posts_tags')
+        tags = request.form.getlist('posts_tags')
+        tags = list(map(int, tags))
 
         for file_instance in f_list:
             file_instance: FileStorage
-            posts_context = FileStorageAdapterPosts(file_instance, tags)
+            posts_context = FileStorageAdapterPosts(file_instance, *tags)
             posts_context.save()
 
         return "upload file success", 200

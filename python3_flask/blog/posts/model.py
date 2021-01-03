@@ -1,8 +1,6 @@
 from blog import db
 from sqlalchemy.orm import Session
 
-__all__ = ['Posts', 'PostsTag', 'PostsStoreDB']
-
 
 class DbBase(object):
 
@@ -49,7 +47,33 @@ class Posts(db.Model, DbBase):
 
 class PostsTag(db.Model, DbBase):
     posts_id = db.Column(db.Integer, primary_key=True)
-    tag_name = db.Column(db.String(128), primary_key=True)
+    tag_id = db.Column(db.Integer, primary_key=True)
+
+
+class Tag(db.Model, DbBase):
+    tag_id = db.Column(db.Integer, primary_key=True)
+    tag_name = db.Column(db.String(128), unique=True)
+
+
+class TagIter(object):
+
+    def __init__(self, tag_list):
+        self.tag_list = tag_list
+        self.max_count = len(tag_list)
+        self.index = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.index == self.max_count:
+            raise StopIteration
+
+        self.index += 1
+
+        return {'tag_name': self.tag_list[self.index - 1].tag_name,
+                'tag_id': self.tag_list[self.index - 1].tag_id
+                }
 
 
 class PostsStoreDB(object):
@@ -72,7 +96,7 @@ class PostsStoreDB(object):
         db.session.flush()  # 从数据库获取posts_id
 
         for tag in self.t_list:
-            tag_db = PostsTag(posts_id=posts_db.posts_id, tag_name=tag)
+            tag_db = PostsTag(posts_id=posts_db.posts_id, tag_id=tag)
             db.session.add(tag_db)
 
         try:
@@ -80,3 +104,12 @@ class PostsStoreDB(object):
         except Exception as e:
             print('PostStoreDb error', e)
             db.session.rollback()
+
+
+def test():
+    db.drop_all()
+    db.create_all()
+    Tag(tag_name='C++').push()
+    Tag(tag_name='Python').push()
+    Tag(tag_name='Mysql').push()
+    Tag(tag_name='Flask').push()
