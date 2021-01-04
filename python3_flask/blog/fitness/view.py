@@ -5,6 +5,8 @@ from flask import request, json
 from .model import Fitness
 import time
 from blog import tool
+from .fitness_context import FitnessInterface, FitnessContext
+from .query import FitnessQueryAll
 
 
 class FitnessView(View):
@@ -15,11 +17,11 @@ class FitnessView(View):
 
     @staticmethod
     def get():
-
+        fit_ctx = FitnessInterface.output(FitnessQueryAll())
         date_list = []
         weight_list = []
 
-        for each_item in Fitness.find_all():
+        for each_item in fit_ctx:
             date_list.append(each_item.date[-2:])
             weight_list.append(each_item.weight)
 
