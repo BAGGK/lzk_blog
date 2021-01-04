@@ -2,11 +2,12 @@
 
 from blog.liweb import View
 from flask import request, json
-from .model import Fitness
 import time
 from blog import tool
-from .fitness_context import FitnessInterface, FitnessContext
-from .query import FitnessQueryAll
+from .fitness_interface import FitnessInterface
+from .query import FitnessQueryAll, FitnessDateQuery
+from .fitness_context import FitnessContext
+from .db_input import DBInput
 
 
 class FitnessView(View):
@@ -41,7 +42,8 @@ class FitnessView(View):
 
         weight = weight * 2 if weight < 100 else weight
 
-        Fitness.push(weight)
+        temp_var = FitnessContext(weight=weight)
+        FitnessInterface.input(temp_var, [DBInput])
         return 'ok', 200
 
 
@@ -55,8 +57,6 @@ class IsFitnessInput(View):
     @staticmethod
     def get():
         current_data = time.strftime('%Y-%m-%d')
-        temp_var = Fitness.find_one(current_data)
-        if temp_var is None:
-            return '0'
-        else:
-            return '1'
+        temp_var = FitnessInterface.output(FitnessDateQuery(current_data))
+
+        return '1' if temp_var else '0'
