@@ -18,11 +18,11 @@ class FitnessView(View):
 
     @staticmethod
     def get():
-        fit_ctx = FitnessInterface.output(FitnessQueryAll())
+        fit_ctx = FitnessInterface.output(FitnessQueryAll(15))
         date_list = []
         weight_list = []
 
-        for each_item in fit_ctx:
+        for each_item in reversed(fit_ctx):
             date_list.append(each_item.date[-2:])
             weight_list.append(each_item.weight)
 
@@ -34,6 +34,8 @@ class FitnessView(View):
 
     @staticmethod
     def post():
+        if IsFitnessInput.get() == '1':
+            return '今天已经提交', 400
         weight = request.form['input_weight']
 
         weight = tool.safe_float(weight)
