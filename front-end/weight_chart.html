@@ -6,7 +6,7 @@
 </script>
 <script>
   $.ajax({
-    url: url+'/fitness',
+    url: url+'/fitness/',
     type: 'GET',
     success: function(data, status){
       data = jQuery.parseJSON(data)
@@ -26,7 +26,7 @@
             type: 'value',
             position:'left',
             name: 'weight',
-            min: '145'
+            min: '140'
         },
         series: [{
             data: weight,
@@ -52,7 +52,7 @@
 <div id="main" style="width: 600px;height:400px;"></div>
 
 <div id='temp_div'>
-  <form action="http://http://127.0.0.1:5000/fitness" method="POST">
+  <form action="http://127.0.0.1:5000/fitness/" method="POST">
   <label for="input_weight">体重</label>
     <input type="text" name="input_weight">
     <input type='submit'>

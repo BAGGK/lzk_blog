@@ -1,6 +1,6 @@
 from blog.liweb import LiFlask
 from flask_sqlalchemy import SQLAlchemy
-from redis import Redis
+from flask_redis import FlaskRedis
 from config import RunConfig
 from flask_cors import *
 
@@ -12,6 +12,7 @@ app.config.from_object(RunConfig)
 # The handle of the model
 db = SQLAlchemy(app)
 # The handle of the cache [redis]
-cache = Redis()
+cache = FlaskRedis(app)
 # CORS
 CORS(app, supports_credentials=True)
+
