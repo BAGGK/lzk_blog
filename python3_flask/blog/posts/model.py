@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 class DbBase(object):
 
-    def push(self):
+    def save(self):
         session: Session = db.session
 
         try:
@@ -25,7 +25,7 @@ class DbBase(object):
             print(class_str + 'delete error', e)
 
     @classmethod
-    def get_list(cls, page=0, limit=10):
+    def get_list(cls, page=0, limit=30):
         session: Session = db.session
         """
         如果 limit = 0 , 则代表不限制
@@ -105,11 +105,16 @@ class PostsStoreDB(object):
             print('PostStoreDb error', e)
             db.session.rollback()
 
+    @staticmethod
+    def get_list(page=0, limit=30):
+        session: Session = db.session
+        session.query(Posts, Tag).join()
+
 
 def test():
     db.drop_all()
     db.create_all()
-    Tag(tag_name='C++').push()
-    Tag(tag_name='Python').push()
-    Tag(tag_name='Mysql').push()
-    Tag(tag_name='Flask').push()
+    Tag(tag_name='C++').save()
+    Tag(tag_name='Python').save()
+    Tag(tag_name='Mysql').save()
+    Tag(tag_name='Flask').save()

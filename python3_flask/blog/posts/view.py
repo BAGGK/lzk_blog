@@ -3,7 +3,7 @@ from flask import request, json
 import time
 from .posts_context import FileStorageAdapterPosts
 from werkzeug.datastructures import FileStorage
-from .model import TagIter, Tag
+from .model import TagIter, Tag, PostsStoreDB
 
 
 class FileUpload(View):
@@ -38,21 +38,21 @@ class PostsHeadView(View):
 
     @staticmethod
     def get():
-        # limit = request.form.get('limit', None)
-        # tags_list = request.form.get('tags', None)
-        #
+        limit = request.form.get('limit', None)
+        tags_list = request.form.get('tags', None)
+
         # db_list = Posts.get_recent_posts(limit_num=limit)
-        # posts_list = []
-        # for each_item in db_list:  # type: PostHead
-        #     item = PostsHeadView.parse_data_to_json(each_item)
-        #     posts_list.append(item)
-        #
-        # ret_val = {
-        #     'current_page': 0,
-        #     'posts': posts_list
-        # }
-        # return flask.json.dumps(ret_val)
-        pass
+
+        posts_list = []
+        for each_item in db_list:  # type: PostHead
+            item = PostsHeadView.parse_data_to_json(each_item)
+            posts_list.append(item)
+
+        ret_val = {
+            'current_page': 0,
+            'posts': posts_list
+        }
+        return json.dumps(ret_val)
 
     @staticmethod
     def parse_data_to_json(posts):

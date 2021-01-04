@@ -64,18 +64,18 @@ class PostsContext(object):
         posts_db = PostsStoreDB(self.title, save_path + security_name, *self.tags)
         posts_db.save()
 
-    @staticmethod
-    def __content_to_html(content):
-        return markdown(content, extensions=['markdown.extensions.extra', 'markdown.extensions.codehilite'])
-
-    def get_introduction_html(self):
-        if not hasattr(self, 'introduction'):
-            self.get_file_introduction()
-
-        return self.__content_to_html(self.introduction)
-
-    def get_posts_html(self):
-        return self.__content_to_html(self.content)
+    # @staticmethod
+    # def __content_to_html(content):
+    #     return markdown(content, extensions=['markdown.extensions.extra', 'markdown.extensions.codehilite'])
+    #
+    # def get_introduction_html(self):
+    #     if not hasattr(self, 'introduction'):
+    #         self.get_file_introduction()
+    #
+    #     return self.__content_to_html(self.introduction)
+    #
+    # def get_posts_html(self):
+    #     return self.__content_to_html(self.content)
 
 
 class FileAdapterPosts(PostsContext):
@@ -110,6 +110,12 @@ class FileStorageAdapterPosts(PostsContext):
         title = fd.filename
 
         super(FileStorageAdapterPosts, self).__init__(content, title, None, *tags)
+
+
+class GetPostsContextList(object):
+
+    def get_posts_context_list(self):
+        PostsStoreDB.get_list()
 
 
 if __name__ == '__main__':
