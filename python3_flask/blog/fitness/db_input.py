@@ -13,8 +13,8 @@ class DBInput(BaseInput):
 
     def save(self):
         data: FitnessContext = self.data
-
         session: db.Session = db.session
+
         last_fit = session.query(Fitness).order_by(Fitness.id.desc()).first()
         temp_list = []
         if last_fit:
