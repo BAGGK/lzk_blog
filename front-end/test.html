@@ -1,33 +1,50 @@
+<html>
+<link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap-theme.css">
+<link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.css">
+<link rel="stylesheet" href="bootstrap-3.3.7-dist/js/bootstrap.min.js">
+<script src="jquery-3.5.1.min.js"></script>
 <script src="vue.js"></script>
 
-<template id='child-template'>
-  <div>
-    <p>come from child</p>
-    <slot></slot>
-  </div>
-</template>
-
-<script>
-  const cpn = {
-    template: '#child-template',
-  }
-</script>
-
-<!-- main -->
 <div id='app'>
-  <cpn><button>1</button></cpn>
-  <cpn><button>2</button></cpn>
-  <cpn></cpn>
+  <form ac>
+
+    <div class="form-group">
+      <label for="exampleInputFile">File input</label>
+      <input type="file" id="exampleInputFile">
+    </div>
+
+    <div class="checkbox" id='check_div'>
+    
+      <label v-for='tag in tags'>
+        <input type="checkbox" :value="tag.tag_id"> {{ tag.tag_name }} &emsp;
+      </label>
+    </div>
+    
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
 </div>
 
 
 
 <script>
-  c
-  new Vue({
-    el: '#app',
-    components: {
-      cpn
-    },
-  })
+  $.get({
+    url: 'http://127.0.0.1:5000/file_upload/',
+    type: 'GET',
+    success: function (data, status) {
+      data = $.parseJSON(data);
+
+      var app = new Vue({
+        el: '#app',
+        data: {
+          message: 'Hello Vue!',
+          tags: data
+        }
+      })
+
+      }
+    }
+  )
 </script>
+
+
+</html>
