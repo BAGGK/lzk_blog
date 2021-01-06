@@ -1,61 +1,63 @@
-<title>Fitness</title>
-<script src="jquery-3.5.1.min.js"></script>
-<script src="echarts.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="jquery-3.5.1.min.js"></script>
+  <script src="echarts.min.js"></script>
+  <script src="weight_chart.js"></script>
+  <script src="vue.js"></script>
+  <title>Fitness</title>
+</head>
+
+<body>
+
+
+  <div id="weight_echarts" style="width: 600px;height:400px;"></div>
+
+  <div id='main' v-if='is_input'>
+    <label for="input_weight">体重</label>
+    <input type="text" id="input_weight" v-model='weight'>
+    <input type='submit' v-on:click='input_weight'>
+  </div>
+
+</body>
+
+</html>
 
 <script>
-  let url = 'http://127.0.0.1:5000'
-</script>
-<script>
-  $.ajax({
-    url: url+'/fitness/',
-    type: 'GET',
-    success: function(data, status){
-      data = jQuery.parseJSON(data)
-      weight = data['weights']
-      date = data['date']
+  var create_vue = function (is_input) {
+    const app = new Vue({
+      el: '#main',
+      data: {
+        is_input: is_input,
+        weight: ''
+      },
+      methods: {
+        input_weight: function (event) {
 
-      // 基于准备好的dom，初始化echarts实例
-      var myChart = echarts.init(document.getElementById('main'));
-
-      // 指定图表的配置项和数据
-      var option = {
-        xAxis: {
-            type: 'category',
-            data: date
+          if (this.weight == ''){
+              alert('请输入体重')
+              return false
+          }
+          form_data = new FormData()
+          form_data.append('input_weight', this.weight)
+          post_data('/fitness/', form_data)
         },
-        yAxis: {
-            type: 'value',
-            position:'left',
-            name: 'weight',
-            min: '140'
-        },
-        series: [{
-            data: weight,
-            type: 'line'
-        }]
-      };
-
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
-        }
-      })
-    $.ajax({
-      url: url+'/is_fitness_input/',
-      type: 'GET',
-      success: function(data, status){
-        if(data == 1)
-          document.getElementById("temp_div").style.visibility="hidden";
-      
       }
     })
+    return app
+  }
 </script>
 
-<div id="main" style="width: 600px;height:400px;"></div>
+<script>
+  let data = get_data('/fitness/')
+  create_echart(data['date'], data['weights'])
 
-<div id='temp_div'>
-  <form action="http://127.0.0.1:5000/fitness/" method="POST">
-  <label for="input_weight">体重</label>
-    <input type="text" name="input_weight">
-    <input type='submit'>
-  </form>
-</div>
+  let is_input = get_data('/is_fitness_input/')
+  console.log(is_input)
+  is_input = is_input == '1' ? false : true
+  let app = create_vue(is_input)
+
+</script>
