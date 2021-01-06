@@ -29,10 +29,3 @@ class Tag(db.Model, DbBase):
     tag_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True, index=True)
 
-
-def add_test_tags():
-    for i in range(10):
-        Tag(name='C++' + str(i)).save()
-
-
-# add_test_tags()
