@@ -1,9 +1,10 @@
 from blog.liweb import View
 from flask import request, json
 import time
-from .posts_context import FileStorageAdapterPosts
-from werkzeug.datastructures import FileStorage
-from .model import TagIter, Tag, PostsStoreDB
+from .posts_context import PostsContext
+from .query import TagQueryAll
+from .model_interface import ModelInterface
+from .model_iterator import TagIter
 
 
 class FileUpload(View):
@@ -13,7 +14,8 @@ class FileUpload(View):
 
     @staticmethod
     def get():
-        tag_list = Tag.get_list(0)
+        tag_list = ModelInterface.output(TagQueryAll())
+
         ret_val = []
         for tag_name in TagIter(tag_list):
             ret_val.append(tag_name)
@@ -25,10 +27,10 @@ class FileUpload(View):
         tags = request.form.getlist('posts_tags')
         tags = list(map(int, tags))
 
-        for file_instance in f_list:
-            file_instance: FileStorage
-            posts_context = FileStorageAdapterPosts(file_instance, *tags)
-            posts_context.save()
+        # for file_instance in f_list:
+        #     file_instance: FileStorage
+        #     posts_context = FileStorageAdapterPosts(file_instance, *tags)
+        #     posts_context.save()
 
         return "upload file success", 200
 

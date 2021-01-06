@@ -15,20 +15,24 @@ class Posts(db.Model, DbBase):
     filename = db.Column(db.String(128), nullable=False)
     # 文件的存储地址
     up_time = db.Column(db.BigInteger, index=True)
-    content = db.Column(db.String(15000))
-    # tags = db.relationship('Tag', secondary='posts_tag', backref=db.backref('posts_set'))
+    content_path = db.Column(db.String(15000))
+    tags = db.relationship('Tag', secondary='posts_tag', backref=db.backref('posts_set'))
 
 
 class PostsTag(db.Model, DbBase):
-    id = db.Column(db.Integer, primary_key=True)
+    pt_id = db.Column(db.Integer, primary_key=True)
     posts_id = db.Column(db.Integer, db.ForeignKey('posts.posts_id'))
     tag_id = db.Column(db.Integer, db.ForeignKey('tag.tag_id'))
 
 
 class Tag(db.Model, DbBase):
     tag_id = db.Column(db.Integer, primary_key=True)
-    tag_name = db.Column(db.String(128), unique=True)
+    name = db.Column(db.String(128), unique=True, index=True)
 
 
-if __name__ == '__main__':
-    db.drop_all()
+def add_test_tags():
+    for i in range(10):
+        Tag(name='C++' + str(i)).save()
+
+
+# add_test_tags()

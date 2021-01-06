@@ -13,40 +13,43 @@
 修改：简单
 """
 __name__ = 'blog.posts.model_interface'
-from .model_input import FileInput, DbInput, BaseInput
+from .input import BaseInput
+from .model import Tag, Posts
+from .tag_context import TagContext, DBAdapterTag
+from .posts_context import PostsContext
 
 
-class TagStruct(object):
-
-    def __init__(self, tag_id, tag_name):
-        self.id = tag_id
-        self.name = tag_name
-
-
-class PostsStruct(object):
-    """对 posts 的抽象"""
-
-    def __init__(self, filename, content, **tags):
-        self.id = None
-        self.path = None
-        self.filename = filename
-        self.content = content
-        self.path = '../save_store'
-        self.tags = []
-
-        for tag_id, tag_name in tags.items():
-            self.tags.append(TagStruct(tag_id, tag_name))
-
-
-class PostsStorageInterface(object):
+class ModelInterface(object):
 
     @staticmethod
     def input(post_st, db_list=None):
-        db_list = db_list if db_list else [FileInput, DbInput]
+        db_list = db_list if db_list else []
 
         for each_db in db_list:
             each_db(post_st).save()
 
     @staticmethod
-    def output(self, target_class, offset=0, limit=30, *condition):
-        return []
+    def output(query_instance):
+        # 1. 得到查询的列表
+        # 2. 遍历循环，全部转换成 FitnessContext
+
+        db_list = query_instance.all()
+        ret_list = []
+
+        for each_ins in db_list:
+            temp_var = AdapterFactor(each_ins)
+            ret_list.append(temp_var)
+        return ret_list
+
+
+class AdapterFactor(object):
+
+    def __new__(cls, instance):
+
+        if isinstance(instance, Tag):
+            return DBAdapterTag(instance)
+
+        elif isinstance(instance, Posts):
+            return PostsContext(instance, 1, 1)
+
+        return super(AdapterFactor, cls).__new__(cls)

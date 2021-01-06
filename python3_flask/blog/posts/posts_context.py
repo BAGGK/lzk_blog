@@ -20,15 +20,13 @@ class PostsContext(object):
         self.title = posts_title
         self.up_time = None
         self.tags = posts_tags
-        self.introduction = None
 
-    def get_file_introduction(self):
-        """取出文件的简介部分"""
-        if self.introduction:
-            return self.introduction
-        else:
+    def __getattr__(self, item):
+        if item == 'introduction':
             self.introduction = self.__parse_introduction()
             return self.introduction
+        raise AttributeError("AttributeError: '%s' object has no attribute '%s"
+                             % (self.__class__.__name__, item))
 
     def __parse_introduction(self):
         # 找到 第二行
@@ -44,5 +42,10 @@ class PostsContext(object):
         return ret_val
 
 
+class FileStoreAdapter(PostsContext):
+    def __init__(self):
+        super(FileStoreAdapter, self).__init__(1, 1, 1)
+
+
 if __name__ == '__main__':
-    pass
+    temp_var = PostsContext(1, 1, 1)

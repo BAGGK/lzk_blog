@@ -14,6 +14,6 @@ class TagIter(object):
 
         self.index += 1
 
-        return {'tag_name': self.tag_list[self.index - 1].tag_name,
-                'tag_id': self.tag_list[self.index - 1].tag_id
+        return {'tag_name': self.tag_list[self.index - 1].name,
+                'tag_id': self.tag_list[self.index - 1].id
                 }
