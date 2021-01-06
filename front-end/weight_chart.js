@@ -35,7 +35,7 @@ function create_echart(date, weight) {
       type: 'value',
       position: 'left',
       // name: 'weight',
-      min: Math.floor(min),
+      min: Math.floor(min) ,
       max: Math.ceil(max)
     },
     series: [{
