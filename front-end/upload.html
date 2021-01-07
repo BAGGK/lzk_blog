@@ -9,66 +9,70 @@
   <link rel="stylesheet" href="bootstrap-3.3.7-dist/js/bootstrap.min.js">
   <script src="jquery-3.5.1.min.js"></script>
   <script src="vue.js"></script>
+
+
+  <script src="global_var.js"></script>
   <title>上传文件</title>
 </head>
 
 <body>
   <div id='app'>
-    <form method="post" enctype="multipart/form-data" action="http://127.0.0.1:5000/file_upload/"
-      onsubmit="return post_file()">
+    <div class="form-group">
+      <label for="exampleInputFile">File input</label>
+      <input type="file" id="file_input" multiple='multiple'>
+    </div>
 
-      <div class="form-group">
-        <label for="exampleInputFile">File input</label>
-        <input type="file" id="exampleInputFile">
-      </div>
+    <div class="checkbox" id='check_div'>
+      <label v-for='tag in tags'>
+        <input type="checkbox" :value="tag.tag_id" name='tag_check_input'> {{ tag.tag_name }} &emsp;
+      </label>
+    </div>
 
-      <div class="checkbox" id='check_div'>
-
-        <label v-for='tag in tags'>
-          <input type="checkbox" :value="tag.tag_id"> {{ tag.tag_name }} &emsp;
-        </label>
-      </div>
-
-      <button type="submit" class="btn btn-default">Submit</button>
-    </form>
+    <button type="submit" class="btn btn-default" @click='post_file'>Submit</button>
   </div>
 </body>
 
 <script>
-  let app = new Vue({
-    el: '#app',
-    data: {
-      message: 'Hello Vue!',
-      tags: [{
-        tag_name: 'lzk',
-        tag_id: '1'
-      }]
-    }
-  })
-
-  $.get({
-    url: 'http://127.0.0.1:5000/file_upload/',
-    type: 'GET',
-    async: false,
-    success: function (data, status) {
-      data = $.parseJSON(data);
-      app.tags = data
-    }
-  })
-  function post_file() {
-    $.post(
-      {
-        url: 'http://127.0.0.1:5000/file_upload/',
-        // traditional: true,
-        data: {
-          posts_tags: [1,2]
+  function create_vue(params) {
+    let app = new Vue({
+      el: '#app',
+      data: {
+        tags: []
+      },
+      methods: {
+        post_file: function (event) {
+          post_file()
         },
-        success: function (data, staus) {
-          alert(data)
-        }
-      })
+      }
+    })
+    return app
+
+  }
+  
+  function post_file() {
+    let el_list = document.getElementsByName('tag_check_input');
+    form_data = new FormData()
+    
+    for (const item_el of el_list) {
+      if(item_el.checked)
+        form_data.append('posts_tags',item_el.value)
+    }
+    let files = document.getElementById('file_input').files;
+    for (const item_file of files) {
+      form_data.append('file_name', item_file)
+      form_data.append('last_modify_time', item_file.lastModified)
+    }
+    post_data('/file_upload/', form_data)
     return false
   }
+</script>
+
+<script>
+  let app = create_vue()
+  // 获取所有的标签内容
+  app.tags = get_data('/file_upload/')
+
+
 </script>
 
 </html>

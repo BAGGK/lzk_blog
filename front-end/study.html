@@ -1,8 +1,38 @@
-
+<script src="global_var.js"></script>
+<script src="jquery-3.5.1.min.js"></script>
+<label>
+  <input type="checkbox" name="check_list" value="0"> C++
+</label>
+<label>
+  <input type="checkbox" name="check_list" value="1"> C++
+</label>
+<label>
+  <input type="checkbox" name="check_list" value="2"> C++
+</label>
+<label>
+  <input type="checkbox" name="check_list" value="3"> C++
+</label>
+<label>
+  <input type="checkbox" name="check_list" value="4"> C++
+</label>
+<label>
+  <input type="checkbox" name="check_list" value="5"> C++
+</label>
+<br>
+<input value='点击' type="button" onclick="lzk()">
 <script>
-  var a = 'hello'
-  console.log(a + ' world')
-  var argc = location.href
-  str_1 =argc.split('?')
-  console.log(str_1)
+
+
+  function lzk(params) {
+    let check_el = document.getElementsByName('check_list')
+    let form_data = new FormData()
+
+    console.log(check_el)
+    for (const iter of check_el) {
+      if(iter.checked)
+        form_data.append('check_list', iter.value)
+    }
+
+    post_data('/', form_data)
+  }
 </script>

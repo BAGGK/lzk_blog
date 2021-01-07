@@ -7,6 +7,7 @@
   <script src="jquery-3.5.1.min.js"></script>
   <script src="echarts.min.js"></script>
   <script src="weight_chart.js"></script>
+  <script src="global_var.js"></script>
 
   <title>Fitness</title>
 </head>
@@ -36,6 +37,7 @@
 
     while(is_input == false){
       let weight_num = prompt('请输入体重：');
+      
       if(/^\d+$/.test(weight_num)){
         input_weight(weight_num)
         is_input = true

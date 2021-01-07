@@ -1,4 +1,4 @@
-let url = 'http://127.0.0.1:5000'
+
 
 function create_echart(date, weight) {
   // 基于准备好的dom，初始化echarts实例
