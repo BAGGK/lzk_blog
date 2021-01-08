@@ -4,10 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <link rel="icon" type="image/png" sizes="144x144" href="self.jpeg"/>
+  <link rel="apple-touch-icon" type="image/png" sizes="144x144" href="self.jpeg"/> -->
+  <title>lzk's blog</title>
+
   <link rel="stylesheet" href="blog.css">
   <script src="vue.js"></script>
   <script src="jquery-3.5.1.min.js"></script>
-  <title>lzk's blog</title>
+
+  <script src="global_var.js"></script>
 </head>
 
 
@@ -39,8 +44,8 @@
       <ul class='nav'>
         <li><a :class="{current: current_page==0}" @click='current_page=0' href="index.html">Home</a></li>
         <li><a :class="{current: current_page==1}" @click='current_page=1' href='#'>Posts</a></li>
-        <li><a :class="{current: current_page==2}" @click='current_page=2' href="#">About</a></li>
         <li><a href="weight_chart.html">Fitness</a></li>
+        <li><a :class="{current: current_page==2}" @click='current_page=2' href="#">About</a></li>
       </ul>
     </div>
 
@@ -48,53 +53,64 @@
     <!-- 文章区域 -->
     <div class="autopagerize_page_element">
       <div class="content">
-        <!-- 具体文章 -->
-        <div class="post animated fadeInDown" v-for='item in posts'>
-          <div class="post-title">
-            <h3><a :href='item.url'>{{ item.title }}</a>
-            </h3>
-          </div>
-          <div class="post-content"><div class="p_part"><p><p>{{ item.content }}</p></p></div>
-        
-          <div class="p_part"><p></p></div></div>
+        <!-- 简介 -->
+        <div v-if='is_introduction'>
+          <div v-for='item in posts' class="post animated fadeInDown">
+            <div class="post-title">
+              <h3><a href="#" @click="get_posts(item.url)">{{ item.title }}</a></h3>
+            </div>
+            <div class="post-content">
+              <div class="p_part">
+                <p v-html='item.content'></p>
+              </div>
+            </div>
+
             <div class="post-footer">
               <div class="meta">
                 <div class="info"><i class="fa fa-sun-o"></i><span class="date">{{ item.date }}</span>
-                  <a class="tag" v-for = 'tag in item.tags' href='tag.tag_url'>{{ tag.tag_name }}</a>     
+                  <a class="tag" v-for='tag in item.tags'>{{ tag.tag_name }}</a>
                 </div>
               </div>
             </div>
-          </div>
 
-       </div>
+          </div>
+        </div>
+        <div v-else class="post animated fadeInDown" v-html='posts_html'>
+          <!-- 具体文章 -->
+        </div>
+      </div>
     </div>
   </div>
 
-<script>
-  var create_vue = function(data){
-    const app = new Vue({
-      el: '#main',
-      data: data
-    })
-    return app
-  }
-</script>
-<!-- vue.js 的脚本 -->
-<script>
-  $.get({
-    url: 'http://127.0.0.1:5000/posts_head',
-    type: 'GET',
-    success: function (data, status) {
-      data = $.parseJSON(data);
-      let posts_list = data['posts'];
+  <script>
+    var create_vue = function (data) {
 
-      for(var item of data['posts']){
-        item.url = 'posts.html?posts_id='+item.url
-      }
-      create_vue(data)
+      const app = new Vue({
+        el: '#main',
+        data: {
+          current_page: 0,
+          posts: data.posts,
+          is_introduction: true,
+          posts_html: ''
+        },
+        methods: {
+          get_posts: function (posts_id) {
+
+            this.is_introduction = false
+            let data_a = get_data('/posts_content/?posts_id=' + posts_id)
+            this.posts_html = data_a
+          }
+        }
+
+      })
+      return app
     }
-  })
-</script>
+  </script>
+  <!-- vue.js 的脚本 -->
+  <script>
+    let data = get_data('/posts_head/?limit=30')
+    let app = create_vue(data)
+  </script>
 </body>
 
 </html>

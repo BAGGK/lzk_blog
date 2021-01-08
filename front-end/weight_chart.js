@@ -5,6 +5,14 @@ function create_echart(date, weight) {
   var myChart = echarts.init(document.getElementById('weight_echarts'));
   let max = Math.max.apply(null, weight)
   let min = Math.min.apply(null, weight)
+  min = Math.floor(min) 
+  max = Math.ceil(max)
+  if( min % 2 != 0 ){
+    min = min -1
+  }
+  if( max %2 != 0 ){
+    max = max + 1
+  }
   // 指定图表的配置项和数据
   var option = {
     title: {
@@ -35,8 +43,8 @@ function create_echart(date, weight) {
       type: 'value',
       position: 'left',
       // name: 'weight',
-      min: Math.floor(min) ,
-      max: Math.ceil(max)
+      min: min,
+      max: max
     },
     series: [{
       data: weight,
