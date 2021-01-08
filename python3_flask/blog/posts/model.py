@@ -14,8 +14,10 @@ class Posts(db.Model, DbBase):
     # 文件原来的名字
     filename = db.Column(db.String(128), nullable=False)
     # 文件的存储地址
-    up_time = db.Column(db.BigInteger, index=True)
-    content_path = db.Column(db.String(15000))
+    last_modify_time = db.Column(db.BigInteger, index=True)
+    content = db.Column(db.String(15000))
+
+    # 关联变量
     tags = db.relationship('Tag', secondary='posts_tag', backref=db.backref('posts_set'))
 
 
@@ -29,3 +31,5 @@ class Tag(db.Model, DbBase):
     tag_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True, index=True)
 
+
+db.create_all()

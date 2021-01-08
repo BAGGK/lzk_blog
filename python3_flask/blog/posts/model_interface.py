@@ -12,21 +12,21 @@
     条件查询：问题就是这个了，我该如何去表达条件，建立不同的类么？
 修改：简单
 """
-__name__ = 'blog.posts.model_interface'
-from .input import BaseInput
+
+from .input import InputFactor
 from .model import Tag, Posts
-from .tag_context import TagContext, DBAdapterTag
-from .posts_context import PostsContext
+from .tag_context import DBAdapterTag
+from .posts_context import DBAdapterPosts
 
 
 class ModelInterface(object):
 
     @staticmethod
-    def input(post_st, db_list=None):
-        db_list = db_list if db_list else []
+    def input(context, db_list=None):
+        db_list = db_list if db_list else [InputFactor(context)]
 
         for each_db in db_list:
-            each_db(post_st).save()
+            each_db(context).save()
 
     @staticmethod
     def output(query_instance):
@@ -50,6 +50,6 @@ class AdapterFactor(object):
             return DBAdapterTag(instance)
 
         elif isinstance(instance, Posts):
-            return PostsContext(instance, 1, 1)
+            return DBAdapterPosts(instance)
 
         return super(AdapterFactor, cls).__new__(cls)

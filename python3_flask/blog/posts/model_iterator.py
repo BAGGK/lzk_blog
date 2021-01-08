@@ -1,8 +1,13 @@
-class TagIter(object):
+import time
+from .posts_context import PostsContext
+from .tag_context import TagContext
 
-    def __init__(self, tag_list):
-        self.tag_list = tag_list
-        self.max_count = len(tag_list)
+
+class BaseIter(object):
+
+    def __init__(self, ctx_list):
+        self.ctx_list = ctx_list
+        self.max_count = len(ctx_list)
         self.index = 0
 
     def __iter__(self):
@@ -11,9 +16,45 @@ class TagIter(object):
     def __next__(self):
         if self.index == self.max_count:
             raise StopIteration
-
         self.index += 1
 
-        return {'tag_name': self.tag_list[self.index - 1].name,
-                'tag_id': self.tag_list[self.index - 1].id
-                }
+        return self.data_form(self.ctx_list[self.index - 1])
+
+    @staticmethod
+    def data_form(ctx_item):
+        raise NotImplementedError
+
+
+class TagIter(BaseIter):
+    @staticmethod
+    def data_form(tag_item):
+        obj = {
+            'tag_name': tag_item.name,
+            'tag_id': tag_item.t_id
+        }
+        return obj
+
+
+class PostsHeadsHtmlIter(BaseIter):
+    @staticmethod
+    def data_form(posts_item):
+        posts_item: PostsContext
+
+        posts_time = time.strftime('%a, %b %d, %Y', time.localtime(posts_item.last_modify_time))
+        tags = []
+        for each_tag in posts_item.tags:
+            each_tag: TagContext
+            json_tag = {
+                'tag_url': each_tag.t_id,
+                'tag_name': each_tag.name
+            }
+            tags.append(json_tag)
+
+        obj = {
+            'url': posts_item.posts_id,
+            'title': posts_item.filename,
+            'content': posts_item.introduction,
+            'date': posts_time,
+            'tags': tags
+        }
+        return obj

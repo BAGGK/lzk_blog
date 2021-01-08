@@ -1,7 +1,6 @@
-from markdown import markdown
-import os
-from uuid import uuid4
 from werkzeug.datastructures import FileStorage
+from .tag_context import TagContext
+from .model import Posts
 
 
 class PostsContext(object):
@@ -9,22 +8,40 @@ class PostsContext(object):
         这个类：完成对posts的抽象和封装。
     """
 
-    def __init__(
-            self,
-            posts_content,
-            posts_title,
-            posts_tags
-    ):
+    def __init__(self, posts_id, filename, content,
+                 introduction, tags, last_modify_time):
         # 以下是实例传递参数
-        self.content = posts_content
-        self.title = posts_title
-        self.up_time = None
-        self.tags = posts_tags
+        for k, v in locals().items():
+            if k == 'self':
+                continue
+            elif v is not None:
+                self.__setattr__(k, v)
 
     def __getattr__(self, item):
+        if item == 'posts_id':
+            self.posts_id = 0
+            return self.posts_id
+
         if item == 'introduction':
             self.introduction = self.__parse_introduction()
             return self.introduction
+
+        if item == 'content':
+            self.content = 'writing .....'
+            return self.content
+
+        if item == 'last_modify_time':
+            self.last_modify_time = 0
+            return self.last_modify_time
+
+        if item == 'tags':
+            self.tags = []
+            return self.tags
+
+        if item == 'filename':
+            self.filename = 'filename'
+            return self.filename
+
         raise AttributeError("AttributeError: '%s' object has no attribute '%s"
                              % (self.__class__.__name__, item))
 
@@ -42,10 +59,27 @@ class PostsContext(object):
         return ret_val
 
 
-class FileStoreAdapter(PostsContext):
-    def __init__(self):
-        super(FileStoreAdapter, self).__init__(1, 1, 1)
+class FileStorageAdapter(PostsContext):
+    def __init__(self, fs, tags_list, last_modify_time):
+        fs: FileStorage
+
+        content = fs.stream.read().decode('utf-8')
+        tags = []
+        for each_tag in tags_list:
+            tags.append(IDAdapterTag(each_tag))
+        super(FileStorageAdapter, self).__init__(None, fs.filename, content,
+                                                 None, tags, last_modify_time)
 
 
-if __name__ == '__main__':
-    temp_var = PostsContext(1, 1, 1)
+class DBAdapterPosts(PostsContext):
+    def __init__(self, posts_ins):
+        posts_ins: Posts
+        tags = []
+
+        for each_tag in posts_ins.tags:
+            tags.append(TagContext(each_tag.tag_id, each_tag.name))
+
+        super(DBAdapterPosts, self).__init__(
+            posts_ins.posts_id, posts_ins.filename,
+            posts_ins.content, None, tags, posts_ins.last_modify_time
+        )
