@@ -50,11 +50,23 @@ class TagQuery(BaseQuery):
     def __filter(self):
         if hasattr(self, 'name') and self.name:
             self.query_ins = self.query_ins.filter_by(name=self.name)
+        if hasattr(self, 'tag_id') and self.tag_id:
+            self.query_ins = self.query_ins.filter_by(tag_id=self.tag_id)
 
     def __order_limit(self):
 
         if hasattr(self, 'limit') and self.limit != 0:
             self.query_ins.limit(self.limit)
+
+
+class PostsQueryByTagId(TagQuery):
+    def __init__(self, tag_id):
+        super(PostsQueryByTagId, self).__init__()
+        self.tag_id = tag_id
+
+    def all(self):
+        tag: Tag = super(PostsQueryByTagId, self).all()[0]
+        return tag.posts_set
 
 
 class TagQueryAll(TagQuery):

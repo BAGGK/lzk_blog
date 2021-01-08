@@ -1,4 +1,5 @@
 import time
+import markdown
 from .posts_context import PostsContext
 from .tag_context import TagContext
 
@@ -49,11 +50,12 @@ class PostsHeadsHtmlIter(BaseIter):
                 'tag_name': each_tag.name
             }
             tags.append(json_tag)
-
+        intro_html = markdown.markdown(posts_item.introduction,
+                                    extensions=['markdown.extensions.extra', 'markdown.extensions.codehilite'])
         obj = {
             'url': posts_item.posts_id,
             'title': posts_item.title,
-            'content': posts_item.introduction,
+            'content': intro_html,
             'date': posts_time,
             'tags': tags
         }

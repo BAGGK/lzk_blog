@@ -13,6 +13,7 @@ class MetaClass(type):
 
 class IntegerField(metaclass=MetaClass):
     def __new__(cls, argc_name, is_list=False):
+
         try:
             cls.ret_val = list(map(int, cls.ret_val)) if isinstance(cls.ret_val, list) else int(cls.ret_val)
         except (ValueError, TypeError):

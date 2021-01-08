@@ -2,7 +2,7 @@ from blog.liweb import View
 from flask import request, json
 import markdown
 from .posts_context import FileStorageAdapter
-from .query import TagQueryAll, PostsQueryAll, PostsQueryById
+from .query import TagQueryAll, PostsQueryAll, PostsQueryByTagId, PostsQueryById
 from .model_interface import ModelInterface
 from .model_iterator import TagIter, PostsHeadsHtmlIter
 from .validator import IntegerField, FileField
@@ -45,19 +45,21 @@ class PostsHeadView(View):
     @staticmethod
     def get():
         limit = IntegerField('limit')
-        tags_list = IntegerField('tags', is_list=True)
+        tags_list: list = IntegerField('tags', is_list=True)
 
         if limit is False or tags_list is False:
             return '参数错误', 400
 
-        posts_ctx_list = ModelInterface.output(PostsQueryAll(limit))
+        if tags_list:
+            posts_ctx_list = ModelInterface.output(PostsQueryByTagId(tags_list[0]))
+        else:
+            posts_ctx_list = ModelInterface.output(PostsQueryAll(limit))
 
         posts_list = []
         for each_item in PostsHeadsHtmlIter(posts_ctx_list):
             posts_list.append(each_item)
 
         ret_val = {
-            'current_page': 0,
             'posts': posts_list
         }
         return json.dumps(ret_val)
@@ -79,4 +81,4 @@ class PostContentView(View):
         ret_var = markdown.markdown(posts_ctx.content,
                                     extensions=['markdown.extensions.extra', 'markdown.extensions.codehilite'])
         ret_var = '<link rel="stylesheet" href="blog.css">' + ret_var
-        return ret_var
+        return json.dumps(ret_var)
