@@ -18,7 +18,7 @@
 
 <body>
   <!-- 这是边框 -->
-  <div class='sidebar'>
+  <div class='sidebar' id="sidebar">
     <div class="logo-title">
       <div class="title">
 
@@ -38,7 +38,6 @@
     </div>
   </div>
 
-
   <div class="main" id='main'>
     <div class="page-top">
       <ul class='nav'>
@@ -50,8 +49,8 @@
     </div>
 
 
-    <!-- 文章区域 -->
-    <div class="autopagerize_page_element">
+    <!-- 文章区域 Home-->
+    <div v-if='current_page == 0' class="autopagerize_page_element">
       <div class="content">
         <!-- 简介 -->
         <div v-if='is_introduction'>
@@ -68,18 +67,27 @@
             <div class="post-footer">
               <div class="meta">
                 <div class="info"><i class="fa fa-sun-o"></i><span class="date">{{ item.date }}</span>
-                  <a class="tag" v-for='tag in item.tags'>{{ tag.tag_name }}</a>
+                  <a class="tag" href='#' v-for='tag in item.tags' @click='click_tag(tag.tag_url)'>{{ tag.tag_name
+                    }}</a>
                 </div>
               </div>
             </div>
 
           </div>
         </div>
-        <div v-else class="post animated fadeInDown" v-html='posts_html'>
-          <!-- 具体文章 -->
+
+        <div class="post animated fadeInDown" v-html='posts_html'>
         </div>
       </div>
     </div>
+
+    <div v-else-if='current_page == 1' class="autopagerize_page_element">
+      <div class="content">
+        <!-- 简介 -->
+        hello
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -99,6 +107,11 @@
             this.is_introduction = false
             let data_a = get_data('/posts_content/?posts_id=' + posts_id)
             this.posts_html = data_a
+          },
+
+          click_tag: function (tag_id) {
+            let data = get_data('/posts_head/?limit=30&tags=' + tag_id);
+            this.posts = data.posts
           }
         }
 
