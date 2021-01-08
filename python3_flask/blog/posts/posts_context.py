@@ -1,5 +1,5 @@
 from werkzeug.datastructures import FileStorage
-from .tag_context import TagContext
+from .tag_context import TagContext, IDAdapterTag
 from .model import Posts
 
 
@@ -27,7 +27,7 @@ class PostsContext(object):
             return self.introduction
 
         if item == 'content':
-            self.content = 'writing .....'
+            self.content = ''
             return self.content
 
         if item == 'last_modify_time':
@@ -41,6 +41,10 @@ class PostsContext(object):
         if item == 'filename':
             self.filename = 'filename'
             return self.filename
+
+        if item == 'title':
+            self.title = self.__parse_title()
+            return self.title
 
         raise AttributeError("AttributeError: '%s' object has no attribute '%s"
                              % (self.__class__.__name__, item))
@@ -56,7 +60,15 @@ class PostsContext(object):
             each_line = each_line.strip()
             if each_line != '':
                 ret_val = each_line
+                break
         return ret_val
+
+    def __parse_title(self):
+        title = ''
+        for each_line in self.content.splitlines():
+            title = each_line.lstrip('#').strip()
+            break
+        return title
 
 
 class FileStorageAdapter(PostsContext):

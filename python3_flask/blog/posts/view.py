@@ -1,11 +1,11 @@
 from blog.liweb import View
 from flask import request, json
-import time
+import markdown
 from .posts_context import FileStorageAdapter
-from .query import TagQueryAll, PostsQueryAll
+from .query import TagQueryAll, PostsQueryAll, PostsQueryById
 from .model_interface import ModelInterface
 from .model_iterator import TagIter, PostsHeadsHtmlIter
-from .validator import IntegerField
+from .validator import IntegerField, FileField
 
 
 class FileUpload(View):
@@ -24,32 +24,19 @@ class FileUpload(View):
 
     @classmethod
     def post(cls):
-        f_list = request.files.getlist('file_name')
-        tags = request.form.getlist('posts_tags')
-        tags = list(map(int, tags))
-        last_modify_time = request.form.getlist('last_modify_time')
-        last_modify_time = list(map(int, last_modify_time))
+        f_list = FileField('file_name', is_list=True)
+        tags = IntegerField('posts_tags', is_list=True)
+        last_modify_time = IntegerField('last_modify_time', is_list=True)
 
-        if not cls.post_validate(f_list, tags, last_modify_time):
-            return 'Please input correct data', 400
+        for each_var in (f_list, tags, last_modify_time):
+            if each_var is False:
+                return 'Please input correct data', 400
 
         for each_file, modify_time in zip(f_list, last_modify_time):
             temp_var = FileStorageAdapter(each_file, tags, modify_time)
             ModelInterface.input(temp_var)
 
         return "upload file success", 200
-
-    @staticmethod
-    def post_validate(f_list, tags, last_modify_time):
-
-        if len(f_list) != len(last_modify_time):
-            return False
-
-        for each_data in tags:
-            if each_data <= 0:
-                return False
-
-        return True
 
 
 class PostsHeadView(View):
@@ -83,8 +70,13 @@ class PostContentView(View):
 
     @staticmethod
     def get():
-        # posts_uuid = request.args.get('posts_id')
-        # if posts_uuid:
-        #     return Posts.get_html(posts_uuid)
-        # return '400'
-        pass
+        posts_id = IntegerField('posts_id')
+
+        if posts_id is False:
+            return '请输入正确的posts_id', 400
+
+        posts_ctx = ModelInterface.output(PostsQueryById(posts_id))[0]
+        ret_var = markdown.markdown(posts_ctx.content,
+                                    extensions=['markdown.extensions.extra', 'markdown.extensions.codehilite'])
+        ret_var = '<link rel="stylesheet" href="blog.css">' + ret_var
+        return ret_var

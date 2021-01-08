@@ -17,7 +17,8 @@ class PostsQuery(BaseQuery):
         return self.query_ins.all()
 
     def __filter(self):
-        pass
+        if hasattr(self, 'posts_id') and self.posts_id:
+            self.query_ins = self.query_ins.filter_by(posts_id=self.posts_id)
 
     def __limit(self):
         pass
@@ -27,6 +28,12 @@ class PostsQueryAll(PostsQuery):
     def __init__(self, limit=30):
         super(PostsQueryAll, self).__init__()
         self.limit = limit
+
+
+class PostsQueryById(PostsQuery):
+    def __init__(self, posts_id):
+        super(PostsQueryById, self).__init__()
+        self.posts_id = posts_id
 
 
 class TagQuery(BaseQuery):

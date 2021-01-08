@@ -40,7 +40,7 @@ class PostsHeadsHtmlIter(BaseIter):
     def data_form(posts_item):
         posts_item: PostsContext
 
-        posts_time = time.strftime('%a, %b %d, %Y', time.localtime(posts_item.last_modify_time))
+        posts_time = time.strftime('%a, %b %d, %Y', time.localtime(posts_item.last_modify_time / 1000))
         tags = []
         for each_tag in posts_item.tags:
             each_tag: TagContext
@@ -52,7 +52,7 @@ class PostsHeadsHtmlIter(BaseIter):
 
         obj = {
             'url': posts_item.posts_id,
-            'title': posts_item.filename,
+            'title': posts_item.title,
             'content': posts_item.introduction,
             'date': posts_time,
             'tags': tags
