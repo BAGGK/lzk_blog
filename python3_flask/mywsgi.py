@@ -1,4 +1,6 @@
-from run import app
+__name__ = '__main__'
+
+from blog import app
 
 if __name__ == '__main__':
     app.run()

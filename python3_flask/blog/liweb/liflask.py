@@ -26,7 +26,7 @@ class LiFlask(Flask):
                                               view_func=item_class.as_view(name=item_class.__name__))
 
                 self.register_blueprint(blue_var, url_prefix='/api')
-        return super(LiFlask, self).run(host, port, debug, load_dotenv)
+        # return super(LiFlask, self).run(host, port, debug, load_dotenv)
 
     def get_bp(self, model_name):
 
