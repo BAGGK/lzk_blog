@@ -19,17 +19,29 @@ class Posts(db.Model, DbBase):
 
     # 关联变量
     tags = db.relationship('Tag', secondary='posts_tag', backref=db.backref('posts_set'))
+    # 添加配置设置编码
+    __table_args__ = {
+        'mysql_charset': 'utf8'
+    }
 
 
 class PostsTag(db.Model, DbBase):
     pt_id = db.Column(db.Integer, primary_key=True)
     posts_id = db.Column(db.Integer, db.ForeignKey('posts.posts_id'))
     tag_id = db.Column(db.Integer, db.ForeignKey('tag.tag_id'))
+    # 添加配置设置编码
+    __table_args__ = {
+        'mysql_charset': 'utf8'
+    }
 
 
 class Tag(db.Model, DbBase):
     tag_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True, index=True)
+    # 添加配置设置编码
+    __table_args__ = {
+        'mysql_charset': 'utf8'
+    }
 
 
 db.create_all()
