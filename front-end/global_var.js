@@ -1,5 +1,5 @@
-let url = 'http://182.254.228.53/API'
-// let url = 'http://127.0.0.1:5000'
+let url = 'http://182.254.228.53/api'
+// let url = 'http://127.0.0.1:5000/api'
 function get_data(api) {
   let ret_val = 0;
 
