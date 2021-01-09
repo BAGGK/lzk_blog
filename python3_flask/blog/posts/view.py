@@ -1,11 +1,11 @@
 from blog.liweb import View
-from flask import request, json
+from flask import json
 import markdown
 from .posts_context import FileStorageAdapter
 from .query import TagQueryAll, PostsQueryAll, PostsQueryByTagId, PostsQueryById
 from .model_interface import ModelInterface
 from .model_iterator import TagIter, PostsHeadsHtmlIter
-from .validator import IntegerField, FileField
+from blog.global_class.validator import IntegerField, FileField
 
 
 class FileUpload(View):
