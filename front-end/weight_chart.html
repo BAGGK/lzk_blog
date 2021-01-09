@@ -38,8 +38,8 @@
     while(is_input == false){
       let weight_num = prompt('请输入体重：');
       
-      if(/^\d+$/.test(weight_num)){
-        input_weight(weight_num)
+      if(/^\d+(\.\d+)?$/.test(weight_num)){
+        // input_weight(weight_num)
         is_input = true
       }
     }
