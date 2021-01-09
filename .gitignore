@@ -1,6 +1,7 @@
 python3_flask/venv/
 python3_flask/.idea/
 python3_flask/save_file
+python3_flask/log/
 *pyc
 .DS_Store
 file_storage
